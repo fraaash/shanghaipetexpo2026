@@ -161,6 +161,35 @@
   footer{color:var(--muted);font-size:13px;text-align:center;padding:34px 0 46px}
   footer a{color:var(--teal-d)}
 
+  /* Combined hub */
+  .upgrid.solo{max-width:460px}
+  .upcard.solo{border-top-width:5px}
+  .upcard.solo .ico{font-size:34px;color:var(--teal)}
+  .countbar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+  .cpill{background:#eef5f3;color:var(--teal-d);border-radius:999px;padding:5px 13px;font-size:13px;font-weight:600}
+  .cpill b{font-weight:800}
+  /* type switch in the board bar */
+  .tsw{border:1px solid var(--line);background:var(--card);font:inherit;font-weight:700;font-size:14px;color:var(--muted);padding:7px 13px;border-radius:999px;cursor:pointer;margin-right:6px}
+  .tsw.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+  #board-title{display:flex;flex-wrap:wrap;gap:6px;font-weight:400}
+  /* namecard scan */
+  .scanrow{display:flex;flex-direction:column;gap:6px}
+  .btn.scan{background:var(--amber);color:#fff;border:0;text-align:center;cursor:pointer;padding:12px;border-radius:10px;font-weight:700}
+  .scanmsg{font-size:13px;color:var(--muted);min-height:16px}
+  .scanmsg.ok{color:var(--good)} .scanmsg.err{color:var(--red)}
+  /* new-supplier inline */
+  .linkwrap{display:flex;flex-direction:column;gap:8px}
+  .linknew{padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:15px}
+  /* To-Do */
+  .todogrp{margin:18px 0}
+  .todohd{font-weight:800;color:var(--teal-d);font-size:16px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .todoprog{font-size:12px;font-weight:700;color:var(--muted);background:#eef5f3;border-radius:999px;padding:2px 9px}
+  .todoitem{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:8px;box-shadow:var(--shadow);cursor:pointer}
+  .todoitem input{width:20px;height:20px;accent-color:var(--teal);flex:none}
+  .todoitem .tt{flex:1;font-weight:600}
+  .todoitem.done .tt{text-decoration:line-through;color:var(--muted)}
+  .todoitem .tcat{font-size:11px;font-weight:700;color:var(--teal-d);background:#eef5f3;border-radius:6px;padding:2px 8px}
+
   /* LOGIN GATE */
   #loginGate{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,var(--teal-d),var(--teal));display:flex;align-items:center;justify-content:center;padding:20px}
   #loginGate.hidden{display:none}
@@ -223,8 +252,7 @@
     <button data-tab="upload" class="active">⬆︎ Upload Hub</button>
     <button data-tab="guide">📖 Trip Guide</button>
     <button data-tab="schedule">🗓 Schedule</button>
-    <button data-tab="database">🗄 All Data</button>
-    <button data-tab="setup">⚙︎ Setup</button>
+    <button data-tab="todo">✅ To-Do</button>
   </div>
 </nav>
 
@@ -232,12 +260,15 @@
 <section class="panel active" id="upload">
   <div class="wrap">
     <h2>Upload Hub</h2>
-    <p class="lead">Snap it, log it, edit it — all here. Pick what you're capturing, fill the form, add photos. Everything saves to one shared list your whole team sees and can edit.</p>
+    <p class="lead">Snap it, log it, edit it — all in one place. Tap <b>Log an entry</b>, pick what you're capturing, fill the short form, add photos. For a supplier, just snap the namecard and it fills in the details for you.</p>
 
-    <div class="upgrid">
-      <div class="upcard" data-ent="suppliers"><div class="ico">🪪</div><h4>Log a Supplier</h4><p>Namecard + contact + follow-up</p><div class="count" id="cnt-suppliers">—</div></div>
-      <div class="upcard" data-ent="products"><div class="ico">📦</div><h4>Log a Product</h4><p>Photos, category, MOQ, price</p><div class="count" id="cnt-products">—</div></div>
-      <div class="upcard" data-ent="trends"><div class="ico">💡</div><h4>Log a Trend / Note</h4><p>Ideas & observations + photos</p><div class="count" id="cnt-trends">—</div></div>
+    <div class="upgrid solo">
+      <div class="upcard solo" id="logBtn"><div class="ico">＋</div><h4>Log an entry</h4><p>Supplier · Product · Note — one form</p></div>
+    </div>
+    <div class="countbar">
+      <span class="cpill">🪪 <b id="cnt-suppliers">—</b> suppliers</span>
+      <span class="cpill">📦 <b id="cnt-products">—</b> products</span>
+      <span class="cpill">💡 <b id="cnt-trends">—</b> notes</span>
     </div>
 
     <div class="board" id="board">
@@ -310,62 +341,12 @@
   </div>
 </section>
 
-<!-- ================= ALL DATA ================= -->
-<section class="panel" id="database">
+<!-- ================= TO-DO ================= -->
+<section class="panel" id="todo">
   <div class="wrap">
-    <h2>All Data</h2>
-    <p class="lead">Everything you log in the Upload Hub is stored in one shared database (five linked tables). You normally never need to open these — the Upload Hub does everything — but here are direct admin links.</p>
-    <div class="cards">
-      <div class="card"><span class="pill">Table 1</span><h4>🪪 Suppliers</h4><p>Contact info, namecard, categories, interest, follow-up status.</p><p style="margin-top:12px"><a class="btn teal" id="lnkSup" target="_blank">Open ↗</a></p></div>
-      <div class="card"><span class="pill">Table 2</span><h4>📦 Products</h4><p>Photos, category, MOQ, price, sample flag — linked to supplier.</p><p style="margin-top:12px"><a class="btn teal" id="lnkProd" target="_blank">Open ↗</a></p></div>
-      <div class="card"><span class="pill">Table 3</span><h4>💡 Trends & Notes</h4><p>Market observations & ideas with photos.</p><p style="margin-top:12px"><a class="btn teal" id="lnkTrend" target="_blank">Open ↗</a></p></div>
-      <div class="card"><span class="pill">Table 4</span><h4>🗓 Itinerary</h4><p>Full 8-day plan with hotels and route options.</p><p style="margin-top:12px"><a class="btn teal" id="lnkItin" target="_blank">Open ↗</a></p></div>
-      <div class="card"><span class="pill">Table 5</span><h4>📍 Visit Targets</h4><p>All 26 planned stops with addresses, priority & status.</p><p style="margin-top:12px"><a class="btn teal" id="lnkVisit" target="_blank">Open ↗</a></p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= SETUP ================= -->
-<section class="panel" id="setup">
-  <div class="wrap">
-    <h2>Setup — one-time (≈10 min)</h2>
-    <p class="lead">This connects the Upload Hub to your shared database securely. Done once by whoever manages the site; the team just uses the page after that.</p>
-
-    <div class="setup">
-      <h4>A · Create an Airtable access token</h4>
-      <ol>
-        <li>Go to <code>airtable.com/create/tokens</code> → <strong>Create token</strong>.</li>
-        <li>Scopes: tick <code>data.records:read</code> and <code>data.records:write</code>.</li>
-        <li>Access: add the <strong>Shanghai Pet Expo 2026</strong> base.</li>
-        <li>Create it and <strong>copy the token</strong> (starts with <code>pat…</code>) — you only see it once.</li>
-      </ol>
-    </div>
-
-    <div class="setup">
-      <h4>B · Deploy the Worker on Cloudflare</h4>
-      <ol>
-        <li>Cloudflare dashboard → <strong>Workers &amp; Pages</strong> → <strong>Create</strong> → <strong>Create Worker</strong>. Name it e.g. <code>fraaash-expo</code>.</li>
-        <li>Click <strong>Edit code</strong>, delete the sample, paste in the contents of <code>worker.js</code>, then <strong>Deploy</strong>.</li>
-        <li>Worker → <strong>Settings → Variables and Secrets</strong> → add two secrets:
-          <br/><code>AIRTABLE_TOKEN</code> = your <code>pat…</code> token
-          <br/><code>BASE_ID</code> = <code>appiFmLjs5kj2T84E</code></li>
-        <li>(Optional, recommended) add <code>ALLOW_ORIGIN</code> = your page's address (e.g. <code>https://expo.fraaash.com</code>).</li>
-        <li>Copy the Worker URL (looks like <code>https://fraaash-expo.<i>yourname</i>.workers.dev</code>).</li>
-      </ol>
-    </div>
-
-    <div class="setup">
-      <h4>C · Connect the page &amp; host it</h4>
-      <ol>
-        <li>Open <code>index.html</code>, find <code>CONFIG</code> near the top, paste the Worker URL into <code>WORKER_URL</code>, save.</li>
-        <li>Host the page (your DNS is on Cloudflare, so <strong>Cloudflare Pages</strong> is easiest):
-          Workers &amp; Pages → Create → Pages → upload <code>index.html</code> → add a custom domain like <code>expo.fraaash.com</code>.</li>
-        <li>Open it, click <strong>Log a Supplier</strong> — you'll get the form straight away. Done.</li>
-      </ol>
-      <p class="note">Your root <code>fraaash.com</code> stays on Shopify, untouched. If you specifically need the address <code>fraaash.com/shanghaipetexpo</code> instead of a subdomain, that needs a small Cloudflare Worker route in front — ask and I'll provide it.</p>
-    </div>
-    <div class="divider"></div>
-    <p class="note">Photos and namecards are stored as attachments in the shared database. The token lives only inside the Cloudflare Worker — it is never in the web page, so the public page can't be used to read or wipe your data.</p>
+    <h2>To-Do</h2>
+    <p class="lead">Everything to sort <strong>before</strong> and <strong>during</strong> the trip. Tap a task to tick it off — it updates the shared list for the whole team.</p>
+    <div id="todo-body"><div class="empty">Loading…</div></div>
   </div>
 </section>
 
@@ -385,28 +366,20 @@ tabBtns.forEach(b=>b.addEventListener('click',()=>{
   panels.forEach(p=>p.classList.remove('active'));
   b.classList.add('active');
   document.getElementById(b.dataset.tab).classList.add('active');
+  if(b.dataset.tab==='todo') loadTodo();
   window.scrollTo({top:0,behavior:'smooth'});
 }));
-
-/* ---------- Admin links ---------- */
-lnkSup.href=CONFIG.BASE_SUPPLIER; lnkProd.href=CONFIG.BASE_PRODUCT; lnkTrend.href=CONFIG.BASE_TREND;
-lnkItin.href=CONFIG.BASE_ITINERARY; lnkVisit.href=CONFIG.BASE_VISITS;
 
 /* ---------- Schemas ---------- */
 const CATS=["Pet Food","Treats & Snacks","Toys","Accessories","Apparel","Grooming","Health & Supplements","Litter & Hygiene","Beds & Furniture","Smart / Tech","Aquatic","Packaging / OEM","Other"];
 const ATTACH={suppliers:{field:"fldhlWw2itJEbiUmL",name:"Namecard"},products:{field:"fldamz66gvJ4GuP65",name:"Photos"},trends:{field:"fld01cWxcFjoI09TG",name:"Photos"}};
 const SCHEMA={
-  suppliers:{title:"Suppliers",icon:"🪪",primary:"Company Name",sub:["Contact Person","Booth Number"],fields:[
+  suppliers:{title:"Suppliers",icon:"🪪",primary:"Company Name",sub:["Contact Person","WeChat ID"],scan:true,fields:[
     {n:"Company Name",l:"Company name",t:"text",req:true,full:true},
     {n:"Contact Person",l:"Contact person",t:"text"},
-    {n:"Title / Role",l:"Title / role",t:"text"},
     {n:"Phone / WhatsApp",l:"Phone / WhatsApp",t:"tel"},
     {n:"WeChat ID",l:"WeChat ID",t:"text"},
     {n:"Email",l:"Email",t:"email"},
-    {n:"Website",l:"Website",t:"url"},
-    {n:"Booth Number",l:"Booth #",t:"text"},
-    {n:"Hall / Zone",l:"Hall / zone",t:"text"},
-    {n:"Country / Region",l:"Country / region",t:"text"},
     {n:"Product Categories",l:"Categories",t:"multi",opts:CATS,full:true},
     {n:"Follow-up Status",l:"Follow-up",t:"select",opts:["New","To Contact","Contacted","Sample Requested","Quoted","Negotiating","Closed / Won","Not Pursuing"]},
     {n:"Interest Level",l:"Interest",t:"rating"},
@@ -420,8 +393,6 @@ const SCHEMA={
     {n:"MOQ",l:"MOQ",t:"number"},
     {n:"Unit Price",l:"Unit price ($)",t:"number"},
     {n:"Price Notes",l:"Price notes",t:"text"},
-    {n:"Materials",l:"Materials",t:"text"},
-    {n:"Colors / Variants",l:"Colors / variants",t:"text"},
     {n:"Status",l:"Status",t:"select",opts:["New","Shortlisted","Sample Requested","Quoted","Ordered","Rejected"]},
     {n:"Interest Level",l:"Interest",t:"rating"},
     {n:"Sample Available",l:"Sample available",t:"checkbox"},
@@ -479,20 +450,19 @@ const boardTitle=document.getElementById('board-title');
 const boardActions=document.getElementById('board-actions');
 const boardBody=document.getElementById('board-body');
 
-document.querySelectorAll('.upcard').forEach(c=>c.addEventListener('click',()=>openEntity(c.dataset.ent)));
+const TYPES=[['suppliers','🪪','Supplier'],['products','📦','Product'],['trends','💡','Note']];
+document.getElementById('logBtn').addEventListener('click',()=>openEntity(current||'suppliers'));
 
 async function openEntity(ent){
   current=ent;
-  document.querySelectorAll('.upcard').forEach(c=>c.classList.toggle('active',c.dataset.ent===ent));
+  document.getElementById('logBtn').classList.add('active');
   board.classList.add('show');
-  boardTitle.textContent=SCHEMA[ent].icon+"  "+SCHEMA[ent].title;
+  boardTitle.innerHTML=TYPES.map(function(t){return '<button type="button" class="tsw'+(t[0]===ent?' on':'')+'" data-t="'+t[0]+'">'+t[1]+' '+t[2]+'</button>';}).join('');
+  boardTitle.querySelectorAll('.tsw').forEach(b=>b.onclick=()=>openEntity(b.dataset.t));
   boardActions.innerHTML='';
   board.scrollIntoView({behavior:'smooth',block:'start'});
-  if(!connected()){
-    boardBody.innerHTML='<div class="msg">This hub isn\'t connected yet. Open the <b>Setup</b> tab to link it to your shared database (one-time, ~10 min). Once connected, this button opens the form directly — no Airtable.</div>';
-    return;
-  }
-  const addBtn=document.createElement('button'); addBtn.className='btn sm'; addBtn.textContent='＋ Add new';
+  const lbl=(TYPES.find(t=>t[0]===ent)||[])[2]||'entry';
+  const addBtn=document.createElement('button'); addBtn.className='btn sm'; addBtn.textContent='＋ New '+lbl;
   addBtn.onclick=()=>showForm(ent,null); boardActions.appendChild(addBtn);
   boardBody.innerHTML='<div class="empty">Loading…</div>';
   try{
@@ -542,6 +512,17 @@ function showForm(ent,rec){
   back.onclick=()=>openEntity(ent); boardActions.appendChild(back);
 
   const form=document.createElement('form'); form.className='entry';
+
+  if(sc.scan){
+    const scanRow=document.createElement('div'); scanRow.className='fld full scanrow';
+    const scanBtn=document.createElement('label'); scanBtn.className='btn scan'; scanBtn.innerHTML='📷 Scan namecard to auto-fill';
+    const scanInp=document.createElement('input'); scanInp.type='file'; scanInp.accept='image/*'; scanInp.capture='environment'; scanInp.style.display='none';
+    const scanMsg=document.createElement('div'); scanMsg.className='scanmsg';
+    scanInp.onchange=()=>doScan(scanInp,form,scanMsg);
+    scanBtn.appendChild(scanInp); scanRow.appendChild(scanBtn); scanRow.appendChild(scanMsg);
+    form.appendChild(scanRow);
+  }
+
   sc.fields.forEach(fd=>{
     const wrap=document.createElement('div'); wrap.className='fld'+(fd.full?' full':'');
     wrap.innerHTML='<label>'+esc(fd.l)+(fd.req?' *':'')+'</label>';
@@ -553,8 +534,14 @@ function showForm(ent,rec){
     else if(fd.t==='rating'){ el=document.createElement('div'); el.className='rate'; el.dataset.rate=f[fd.n]||0;
       for(let i=1;i<=5;i++){ const s=document.createElement('span'); s.className='s'+(i<=(f[fd.n]||0)?' on':''); s.textContent='★'; s.onclick=()=>{ el.dataset.rate=(''+el.dataset.rate===''+i)?0:i; el.querySelectorAll('.s').forEach((x,ix)=>x.classList.toggle('on',ix<el.dataset.rate)); }; el.appendChild(s);} }
     else if(fd.t==='checkbox'){ el=document.createElement('label'); el.className='chk'; const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!f[fd.n]; el.appendChild(cb); el.append(' Yes'); el.dataset.chk=fd.n; el._cb=cb; }
-    else if(fd.t==='link'){ el=document.createElement('select'); el.innerHTML='<option value="">—</option>'+(cache.suppliers||[]).map(s=>{ const cur=f[fd.n]; const on=cur&&cur[0]===s.id; return '<option value="'+s.id+'"'+(on?' selected':'')+'>'+esc(s.fields["Company Name"]||"(supplier)")+'</option>';}).join(''); el.dataset.link=fd.n; }
-    else { el=document.createElement('input'); el.type=(fd.t==='number'?'number':fd.t==='date'?'date':fd.t==='email'?'email':fd.t==='url'?'url':fd.t==='tel'?'tel':'text'); el.value=f[fd.n]!=null?f[fd.n]:''; }
+    else if(fd.t==='link'){ el=document.createElement('div'); el.className='linkwrap';
+      const sel=document.createElement('select'); sel.className='linksel';
+      sel.innerHTML='<option value="">—</option>'+(cache.suppliers||[]).map(s=>{ const cur=f[fd.n]; const on=cur&&cur[0]===s.id; return '<option value="'+s.id+'"'+(on?' selected':'')+'>'+esc(s.fields["Company Name"]||"(supplier)")+'</option>';}).join('')+'<option value="__new__">➕ New supplier…</option>';
+      const ni=document.createElement('input'); ni.type='text'; ni.placeholder='New supplier name'; ni.className='linknew'; ni.style.display='none';
+      sel.onchange=()=>{ ni.style.display=(sel.value==='__new__')?'block':'none'; };
+      el.appendChild(sel); el.appendChild(ni); el._sel=sel; el._new=ni; el.dataset.link=fd.n; }
+    else { el=document.createElement('input'); el.type=(fd.t==='number'?'number':fd.t==='date'?'date':fd.t==='email'?'email':fd.t==='url'?'url':fd.t==='tel'?'tel':'text');
+      let _v=f[fd.n]!=null?f[fd.n]:''; if(fd.t==='date' && !rec && !_v) _v=todayISO(); el.value=_v; }
     el.dataset.name=fd.n; el.dataset.type=fd.t;
     wrap.appendChild(el); form.appendChild(wrap);
   });
@@ -598,7 +585,7 @@ function collectFields(form){
     if(t==='multi'){ const vals=[...el.querySelectorAll('.opt.on')].map(o=>o.textContent); if(vals.length) fields[n]=vals; }
     else if(t==='rating'){ const v=+el.dataset.rate; if(v) fields[n]=v; }
     else if(t==='checkbox'){ fields[n]=el._cb.checked; }
-    else if(t==='link'){ if(el.value) fields[n]=[el.value]; }
+    else if(t==='link'){ const sel=el._sel; if(sel && sel.value && sel.value!=='__new__') fields[n]=[sel.value]; }
     else if(t==='number'){ if(el.value!=='') fields[n]=parseFloat(el.value); }
     else { if(el.value!=='' && el.value!=null) fields[n]=el.value; }
   });
@@ -609,6 +596,13 @@ async function doSave(ent,rec,form,btn){
   form.classList.add('saving'); btn.textContent='Saving…';
   try{
     const fields=collectFields(form);
+    // inline "New supplier" chosen on a link field
+    const lw=form.querySelector('.linkwrap');
+    if(lw && lw._sel.value==='__new__' && lw._new.value.trim()){
+      const ns=await api("/api/suppliers",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:{"Company Name":lw._new.value.trim(),"Date Met":todayISO()}})});
+      fields[lw.dataset.link]=[ns.id];
+      await loadList('suppliers');
+    }
     let recId;
     if(rec){
       // update: also reconcile kept photos (handles deletions)
@@ -644,7 +638,7 @@ async function doDelete(ent,rec){
   }catch(e){ alert("Couldn't delete: "+e.message); }
 }
 
-function refreshCounts(){ ["suppliers","products","trends"].forEach(ent=>{ const el=document.getElementById("cnt-"+ent); if(el) el.textContent=(cache[ent]?cache[ent].length:0)+" logged"; }); }
+function refreshCounts(){ ["suppliers","products","trends"].forEach(ent=>{ const el=document.getElementById("cnt-"+ent); if(el) el.textContent=(cache[ent]?cache[ent].length:0); }); }
 
 async function preloadCounts(){
   if(!connected()){ ["suppliers","products","trends"].forEach(e=>{const el=document.getElementById("cnt-"+e); if(el) el.textContent="not connected";}); return; }
@@ -652,6 +646,65 @@ async function preloadCounts(){
   refreshCounts();
 }
 function esc(s){return (s==null?"":(""+s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function todayISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+/* ---------- Namecard scan (AI auto-fill) ---------- */
+async function doScan(inp,form,msg){
+  if(!inp.files||!inp.files[0]) return;
+  const file=inp.files[0];
+  msg.textContent='📷 Reading card…'; msg.className='scanmsg';
+  try{
+    const dataUrl=await readFile(file);
+    selectedPhotos.push({file,dataUrl}); renderPhotoStrip('suppliers'); // keep the card as the namecard photo too
+    const b64=dataUrl.split(',')[1];
+    const r=await api('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,contentType:file.type||'image/jpeg'})});
+    const d=(r&&r.data)?r.data:(r||{});
+    const map={ 'Company Name':d.company, 'Contact Person':d.name, 'Phone / WhatsApp':d.phone, 'WeChat ID':d.wechat, 'Email':d.email };
+    let filled=0;
+    Object.keys(map).forEach(k=>{ if(!map[k]) return; const el=form.querySelector('[data-name="'+k+'"]'); if(el && ('value' in el) && !el.value){ el.value=map[k]; filled++; } });
+    msg.textContent=filled? ('✓ Filled '+filled+' field'+(filled>1?'s':'')+' from the card — please double-check.') : 'Couldn’t read the card clearly — please type the details in.';
+    msg.className='scanmsg '+(filled?'ok':'err');
+  }catch(e){ msg.textContent='Scan unavailable ('+e.message+') — please type the details in.'; msg.className='scanmsg err'; }
+  inp.value='';
+}
+
+/* ---------- To-Do ---------- */
+const TODO_GROUPS=[['Before Trip','🧳'],['During Trip','📍']];
+async function loadTodo(){
+  const body=document.getElementById('todo-body'); if(!body) return;
+  body.innerHTML='<div class="empty">Loading…</div>';
+  try{
+    const d=await api('/api/todo'); const recs=d.records||[];
+    if(!recs.length){ body.innerHTML='<div class="empty">No tasks yet.</div>'; return; }
+    let html='';
+    TODO_GROUPS.forEach(g=>{
+      const grp=g[0], ic=g[1];
+      const items=recs.filter(r=>((r.fields.Timing)||'')===grp);
+      if(!items.length) return;
+      const doneN=items.filter(r=>r.fields.Status==='Done').length;
+      html+='<div class="todogrp"><div class="todohd">'+ic+' '+grp+' <span class="todoprog">'+doneN+'/'+items.length+'</span></div>';
+      items.forEach(r=>{
+        const done=r.fields.Status==='Done';
+        html+='<label class="todoitem'+(done?' done':'')+'" data-id="'+r.id+'">'
+          +'<input type="checkbox"'+(done?' checked':'')+'>'
+          +'<span class="tt">'+esc(r.fields.Task||'')+'</span>'
+          +(r.fields.Category?'<span class="tcat">'+esc(r.fields.Category)+'</span>':'')
+          +'</label>';
+      });
+      html+='</div>';
+    });
+    body.innerHTML=html;
+    body.querySelectorAll('.todoitem').forEach(it=>{
+      const cb=it.querySelector('input');
+      cb.onchange=async()=>{
+        const id=it.dataset.id; const status=cb.checked?'Done':'To Do';
+        it.classList.toggle('done',cb.checked);
+        try{ await api('/api/todo/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{Status:status}})}); loadTodo(); }
+        catch(e){ cb.checked=!cb.checked; it.classList.toggle('done',cb.checked); alert('Couldn’t update: '+e.message); }
+      };
+    });
+  }catch(e){ body.innerHTML='<div class="msg err">Couldn’t load to-do: '+esc(e.message)+'</div>'; }
+}
 
 /* ---------- Itinerary accordion ---------- */
 const DAYS=[
