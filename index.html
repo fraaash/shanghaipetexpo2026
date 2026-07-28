@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fraaash · Shanghai Pet Expo 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --ink:#14201d; --paper:#f6f4ee; --card:#ffffff;
+    --teal:#0f766e; --teal-d:#0b5850; --amber:#e0912f; --amber-d:#b9761f;
+    --line:#e3ded3; --muted:#6b7772; --good:#2f9e6f; --red:#c0492f;
+    --shadow:0 8px 30px rgba(20,32,29,.08);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.55;}
+  a{color:var(--teal)}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+
+  header.hero{background:linear-gradient(135deg,var(--teal-d),var(--teal));color:#fff;padding:46px 0 40px;position:relative;overflow:hidden}
+  header.hero:after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.06)}
+  .brand{font-weight:800;letter-spacing:.5px;font-size:15px;text-transform:uppercase;opacity:.9}
+  .hero h1{margin:.25em 0 .1em;font-size:34px;line-height:1.15}
+  .hero .sub{font-size:18px;opacity:.95}
+  .facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .fact{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:8px 15px;font-size:14px;font-weight:600;backdrop-filter:blur(3px)}
+
+  nav.tabs{position:sticky;top:0;z-index:20;background:rgba(246,244,238,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  nav.tabs .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:8px;padding-bottom:8px}
+  nav.tabs button{border:0;background:transparent;font:inherit;font-weight:700;color:var(--muted);padding:9px 14px;border-radius:10px;cursor:pointer;white-space:nowrap}
+  nav.tabs button.active{background:var(--teal);color:#fff}
+
+  section.panel{display:none;padding:34px 0 20px}
+  section.panel.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h2{font-size:24px;margin:0 0 6px}
+  h3{font-size:17px;margin:26px 0 8px;color:var(--teal-d)}
+  .lead{color:var(--muted);margin-top:0;max-width:70ch}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:18px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .card h4{margin:0 0 6px;font-size:15px}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  .pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:#eef5f3;color:var(--teal-d);margin-bottom:8px}
+
+  ul.tick{list-style:none;padding:0;margin:10px 0}
+  ul.tick li{padding:7px 0 7px 30px;position:relative;border-bottom:1px dashed var(--line)}
+  ul.tick li:before{content:"✓";position:absolute;left:4px;top:7px;color:var(--good);font-weight:800}
+
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px}
+  .tag.b2b{background:#e7f0ff;color:#2456b8}.tag.b2c{background:#fdeede;color:var(--amber-d)}.tag.trip{background:#eaf6ef;color:var(--good)}
+
+  /* ACCORDION */
+  .acc{display:flex;flex-direction:column;gap:10px;margin:14px 0}
+  .acc-item{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .acc-head{display:flex;align-items:center;gap:14px;padding:15px 18px;cursor:pointer;user-select:none;flex-wrap:wrap}
+  .acc-head:hover{background:#f7faf9}
+  .acc-head .d-date{font-weight:800;color:var(--teal-d);white-space:nowrap;flex:0 0 auto;min-width:96px}
+  .acc-head .d-city{font-size:13px;font-weight:700;color:#fff;background:var(--teal);padding:3px 12px;border-radius:999px;white-space:nowrap;flex:0 0 auto}
+  .acc-head .d-plan{color:var(--ink);font-size:14.5px;flex:1 1 180px;min-width:150px}
+  .acc-head .chev{transition:transform .2s;color:var(--muted);font-size:18px;flex:0 0 auto;margin-left:8px}
+  .acc-item.open .chev{transform:rotate(180deg)}
+  .acc-body{display:none;border-top:1px solid var(--line);background:#fbfaf6}
+  .acc-item.open .acc-body{display:block}
+  table.detail{width:100%;border-collapse:collapse}
+  table.detail th,table.detail td{text-align:left;padding:10px 18px;border-bottom:1px solid var(--line);font-size:13.5px;vertical-align:top}
+  table.detail th{background:#eef5f3;color:var(--teal-d);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+  table.detail td.t-time{white-space:nowrap;font-weight:700;color:var(--teal-d);width:120px}
+  table.detail td.t-act{width:34%;font-weight:600}
+  table.detail tr.visit td.t-act{color:var(--amber-d)}
+  table.detail tr.route td{background:#eef5f3;font-weight:800;color:var(--teal-d);font-size:12px;text-transform:uppercase;letter-spacing:.3px}
+  @media(max-width:640px){
+    .acc-head{gap:8px}
+    .acc-head .d-plan{flex-basis:100%;order:3}
+    .acc-head .chev{order:2}
+    table.detail td.t-act{width:auto}
+    table.detail th,table.detail td{padding:9px 12px}
+  }
+
+  /* UPLOAD HUB / APP */
+  .upgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin:8px 0 20px}
+  .upcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);text-align:center;cursor:pointer;transition:.15s;border-top:4px solid var(--teal)}
+  .upcard:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(20,32,29,.14)}
+  .upcard.active{outline:2px solid var(--teal)}
+  .upcard .ico{font-size:30px}
+  .upcard h4{margin:8px 0 4px}
+  .upcard p{margin:0;color:var(--muted);font-size:13px}
+  .upcard .count{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;color:var(--teal-d);background:#eef5f3;border-radius:999px;padding:2px 10px}
+
+  .btn{display:inline-block;background:var(--amber);color:#fff;font-weight:700;text-decoration:none;padding:11px 20px;border-radius:11px;border:0;cursor:pointer;font:inherit}
+  .btn:hover{background:var(--amber-d)}
+  .btn.ghost{background:transparent;color:var(--teal-d);border:1.5px solid var(--teal)}
+  .btn.teal{background:var(--teal)}.btn.teal:hover{background:var(--teal-d)}
+  .btn.sm{padding:7px 13px;font-size:13px;border-radius:9px}
+  .btn.danger{background:transparent;color:var(--red);border:1.5px solid var(--red)}
+  .btn.danger:hover{background:var(--red);color:#fff}
+
+  .board{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-top:6px;display:none}
+  .board.show{display:block}
+  .board-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .board-bar strong{color:var(--teal-d);font-size:16px}
+  .msg{padding:16px;border-radius:12px;background:#fff7ea;border:1px solid #f0dcb8;color:var(--amber-d);font-size:14px}
+  .msg.err{background:#fdece8;border-color:#f2c3b8;color:var(--red)}
+  .empty{text-align:center;color:var(--muted);padding:26px 10px;font-size:14px}
+
+  .rows{display:flex;flex-direction:column;gap:10px}
+  .row{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;transition:.12s}
+  .row:hover{background:#f7faf9;border-color:#cfe4df}
+  .row .thumb{width:52px;height:52px;border-radius:9px;object-fit:cover;background:#eef1ee;flex:0 0 auto}
+  .row .thumb.ph{display:flex;align-items:center;justify-content:center;color:#a9b3af;font-size:22px}
+  .row .info{flex:1;min-width:0}
+  .row .info .nm{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .info .sub{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .chip{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:#eef5f3;color:var(--teal-d)}
+  .chip.amber{background:#fdeede;color:var(--amber-d)}
+  .stars{color:#e0a52f;font-size:13px;letter-spacing:1px}
+
+  form.entry{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  form.entry .full{grid-column:1 / -1}
+  .fld{display:flex;flex-direction:column;gap:5px}
+  .fld label{font-size:12.5px;font-weight:700;color:var(--teal-d)}
+  .fld input,.fld select,.fld textarea{font:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);width:100%}
+  .fld textarea{min-height:74px;resize:vertical}
+  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--teal)}
+  .multi{display:flex;flex-wrap:wrap;gap:7px}
+  .multi .opt{font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:999px;border:1.5px solid var(--line);cursor:pointer;user-select:none}
+  .multi .opt.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .rate{display:flex;gap:4px;font-size:24px;color:#d8d3c6;cursor:pointer}
+  .rate .s.on{color:#e0a52f}
+  .chk{display:flex;align-items:center;gap:9px;font-size:14px}
+  .chk input{width:auto}
+
+  .photos{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+  .ph-item{position:relative;width:84px;height:84px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+  .ph-item img{width:100%;height:100%;object-fit:cover}
+  .ph-item .rm{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:12px;line-height:1}
+  .ph-add{width:84px;height:84px;border:2px dashed var(--line);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:12px;cursor:pointer;text-align:center}
+  .ph-add span{font-size:22px;line-height:1}
+  .form-actions{grid-column:1/-1;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px;border-top:1px solid var(--line);padding-top:14px}
+  .form-actions .left{margin-right:auto}
+  .saving{opacity:.6;pointer-events:none}
+  @media(max-width:640px){form.entry{grid-template-columns:1fr}}
+
+  .qrrow{display:flex;gap:22px;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-top:18px}
+  #qr{background:#fff;padding:8px;border-radius:10px}
+  .qrrow p{margin:0;color:var(--muted);font-size:14px}
+
+  table.sched{width:100%;border-collapse:collapse}
+  .setup{background:#fff7ea;border:1px solid #f0dcb8;border-radius:var(--radius);padding:18px 20px;margin:18px 0}
+  .setup h4{margin:0 0 8px;color:var(--amber-d)}
+  .setup ol{margin:0;padding-left:20px}.setup li{margin:6px 0;font-size:14px}
+  .setup code{background:#f0ede4;padding:2px 6px;border-radius:5px}
+  .divider{height:1px;background:var(--line);margin:6px 0 0}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+
+  footer{color:var(--muted);font-size:13px;text-align:center;padding:34px 0 46px}
+  footer a{color:var(--teal-d)}
+
+  /* LOGIN GATE */
+  #loginGate{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,var(--teal-d),var(--teal));display:flex;align-items:center;justify-content:center;padding:20px}
+  #loginGate.hidden{display:none}
+  .login-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px 26px;max-width:360px;width:100%;text-align:center}
+  .login-brand{font-weight:800;letter-spacing:.5px;font-size:13px;text-transform:uppercase;color:var(--teal);opacity:.9}
+  .login-card h2{font-size:22px;margin:.35em 0 .2em}
+  .login-card p{color:var(--muted);font-size:14px;margin:0 0 18px}
+  .login-card input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:16px;margin-bottom:12px}
+  .login-card button{width:100%;padding:12px;border:0;border-radius:10px;background:var(--teal);color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer}
+  .login-card button:disabled{opacity:.6;cursor:default}
+  .login-err{color:var(--red);font-size:13px;margin-top:12px;min-height:18px}
+</style>
+</head>
+<body>
+
+<!-- ===================== TEAM LOGIN ===================== -->
+<div id="loginGate">
+  <div class="login-card">
+    <div class="login-brand">Fraaash · Internal</div>
+    <h2>Shanghai Pet Expo 2026</h2>
+    <p>Enter the team password to open the sourcing hub.</p>
+    <input id="loginPw" type="password" placeholder="Team password" autocomplete="current-password" />
+    <button id="loginBtn">Enter</button>
+    <div id="loginErr" class="login-err"></div>
+  </div>
+</div>
+
+<!-- =======================================================================
+     CONFIG — paste your Cloudflare Worker URL here (see the Setup tab).
+     Until it's set, the Upload Hub shows a short connect notice.
+======================================================================== -->
+<script>
+  const CONFIG = {
+    WORKER_URL: "https://fraaash-expo.dylantan9815.workers.dev",
+    // Direct links to open the tables in Airtable (optional, for admin):
+    BASE_SUPPLIER: "https://airtable.com/appiFmLjs5kj2T84E/tblpJOJfR2FGixePL",
+    BASE_PRODUCT:  "https://airtable.com/appiFmLjs5kj2T84E/tblzRSQkAtUpUJp4y",
+    BASE_TREND:    "https://airtable.com/appiFmLjs5kj2T84E/tblPxQpRVeIcXXnIb",
+    BASE_ITINERARY:"https://airtable.com/appiFmLjs5kj2T84E/tbl3WmVwIiY33RXs0",
+    BASE_VISITS:   "https://airtable.com/appiFmLjs5kj2T84E/tblvsfuLs8kdabVgi"
+  };
+</script>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="brand">Fraaash · Internal</div>
+    <h1>Shanghai Pet Expo 2026 — Sourcing Hub</h1>
+    <div class="sub">Everything for the trip, and one shared place to log every supplier, product & idea.</div>
+    <div class="facts">
+      <span class="fact">📅 Expo 19–23 Aug 2026</span>
+      <span class="fact">🧳 Trip 18–25 Aug</span>
+      <span class="fact">📍 Shanghai · Shandong · Zhengzhou</span>
+      <span class="fact">🐾 Pet Fair Asia (28th)</span>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button data-tab="upload" class="active">⬆︎ Upload Hub</button>
+    <button data-tab="guide">📖 Trip Guide</button>
+    <button data-tab="schedule">🗓 Schedule</button>
+    <button data-tab="database">🗄 All Data</button>
+    <button data-tab="setup">⚙︎ Setup</button>
+  </div>
+</nav>
+
+<!-- ================= UPLOAD HUB (in-page app) ================= -->
+<section class="panel active" id="upload">
+  <div class="wrap">
+    <h2>Upload Hub</h2>
+    <p class="lead">Snap it, log it, edit it — all here. Pick what you're capturing, fill the form, add photos. Everything saves to one shared list your whole team sees and can edit.</p>
+
+    <div class="upgrid">
+      <div class="upcard" data-ent="suppliers"><div class="ico">🪪</div><h4>Log a Supplier</h4><p>Namecard + contact + follow-up</p><div class="count" id="cnt-suppliers">—</div></div>
+      <div class="upcard" data-ent="products"><div class="ico">📦</div><h4>Log a Product</h4><p>Photos, category, MOQ, price</p><div class="count" id="cnt-products">—</div></div>
+      <div class="upcard" data-ent="trends"><div class="ico">💡</div><h4>Log a Trend / Note</h4><p>Ideas & observations + photos</p><div class="count" id="cnt-trends">—</div></div>
+    </div>
+
+    <div class="board" id="board">
+      <div class="board-bar">
+        <strong id="board-title">—</strong>
+        <div id="board-actions"></div>
+      </div>
+      <div id="board-body"></div>
+    </div>
+
+    <div class="qrrow">
+      <div id="qr"></div>
+      <p><strong>Share this page with the team.</strong><br/>
+      Scan to open the Upload Hub on any phone. Everyone logs into the same shared list.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRIP GUIDE ================= -->
+<section class="panel" id="guide">
+  <div class="wrap">
+    <h2>Trip Guide</h2>
+    <p class="lead">Pet Fair Asia is the largest pet-industry show in the world — ~2,600 exhibitors across 17 indoor + 10 outdoor halls (~320,000 sqm) and ~500k+ visitors. Then a Shandong + Henan factory tour. Come with a plan.</p>
+
+    <div class="cards">
+      <div class="card"><span class="pill">Why we're here</span><h4>Source products & suppliers</h4><p>Find OEM/ODM partners and ready lines. Capture every card and product into the Upload Hub.</p></div>
+      <div class="card"><span class="pill">Why we're here</span><h4>Read the trends</h4><p>Themed zones — Human-Pet Lifestyle, Pet Wellness & Elderly Care, Pet Life Trend Hall. Log ideas in the Trends tab.</p></div>
+      <div class="card"><span class="pill">Why we're here</span><h4>Benchmark the market</h4><p>Pricing, packaging, competitors, stores & hospitals. Photos + notes beat memory a week later.</p></div>
+    </div>
+
+    <h3>Key facts</h3>
+    <ul class="tick">
+      <li><strong>Event:</strong> Pet Fair Asia 2026 (28th edition) — Shanghai Pet Expo</li>
+      <li><strong>Dates:</strong> 19–23 August 2026 · 3 B2B/trade days (19–21) + 2 public days (22–23)</li>
+      <li><strong>Venue:</strong> Shanghai New International Expo Centre (SNIEC), 2345 Longyang Rd, Pudong</li>
+      <li><strong>Our trip:</strong> 18–25 August — Shanghai → Linyi → Tai'an → Zhengzhou</li>
+      <li><strong>Best sourcing days:</strong> the B2B days (19–21) — quieter, decision-makers on booth</li>
+    </ul>
+
+    <h3>Before you go — checklist</h3>
+    <ul class="tick">
+      <li>Register/pre-badge on the official Pet Fair Asia site; save the QR badge offline</li>
+      <li>WeChat installed + set up (primary channel for China suppliers); WhatsApp as backup</li>
+      <li>Alipay / WeChat Pay linked to a card for cabs, food, deposits</li>
+      <li>eSIM or roaming + a VPN set up before landing</li>
+      <li>Plenty of your own namecards (bring 2–3× what you think)</li>
+      <li>Phone storage cleared for photos; power bank for long hall days</li>
+      <li>12306 booked for the HSR legs (Shanghai→Linyi, and the Shandong→Zhengzhou route)</li>
+      <li>This Upload Hub bookmarked on every team member's phone</li>
+    </ul>
+
+    <h3>At the booth — capture routine</h3>
+    <ul class="tick">
+      <li>Namecard → Upload Hub → <strong>Log a Supplier</strong> → photo the card, add booth #</li>
+      <li>Interesting product → <strong>Log a Product</strong> → 2–3 photos, MOQ, target price, pick the supplier</li>
+      <li>Rate interest 1–5 while it's fresh so shortlisting back home is fast</li>
+      <li>Ask for: MOQ, FOB price, lead time, customization/OEM, samples — note in the form</li>
+      <li>Spotted a trend? → <strong>Log a Trend / Note</strong> before you forget</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= SCHEDULE ================= -->
+<section class="panel" id="schedule">
+  <div class="wrap">
+    <h2>Schedule</h2>
+    <p class="lead">The full 8-day plan — Shanghai (stores + expo + hospitals), then the Shandong factory belt, then Zhengzhou. <strong>Tap any day to expand the full time-by-time detail.</strong></p>
+    <div class="acc" id="acc"></div>
+    <p class="note">Shandong routing (Day 6) is decided on expo Day 2–3 depending on which factory appointments land — all three route options (A/B/C) are shown when you expand that day.</p>
+  </div>
+</section>
+
+<!-- ================= ALL DATA ================= -->
+<section class="panel" id="database">
+  <div class="wrap">
+    <h2>All Data</h2>
+    <p class="lead">Everything you log in the Upload Hub is stored in one shared database (five linked tables). You normally never need to open these — the Upload Hub does everything — but here are direct admin links.</p>
+    <div class="cards">
+      <div class="card"><span class="pill">Table 1</span><h4>🪪 Suppliers</h4><p>Contact info, namecard, categories, interest, follow-up status.</p><p style="margin-top:12px"><a class="btn teal" id="lnkSup" target="_blank">Open ↗</a></p></div>
+      <div class="card"><span class="pill">Table 2</span><h4>📦 Products</h4><p>Photos, category, MOQ, price, sample flag — linked to supplier.</p><p style="margin-top:12px"><a class="btn teal" id="lnkProd" target="_blank">Open ↗</a></p></div>
+      <div class="card"><span class="pill">Table 3</span><h4>💡 Trends & Notes</h4><p>Market observations & ideas with photos.</p><p style="margin-top:12px"><a class="btn teal" id="lnkTrend" target="_blank">Open ↗</a></p></div>
+      <div class="card"><span class="pill">Table 4</span><h4>🗓 Itinerary</h4><p>Full 8-day plan with hotels and route options.</p><p style="margin-top:12px"><a class="btn teal" id="lnkItin" target="_blank">Open ↗</a></p></div>
+      <div class="card"><span class="pill">Table 5</span><h4>📍 Visit Targets</h4><p>All 26 planned stops with addresses, priority & status.</p><p style="margin-top:12px"><a class="btn teal" id="lnkVisit" target="_blank">Open ↗</a></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SETUP ================= -->
+<section class="panel" id="setup">
+  <div class="wrap">
+    <h2>Setup — one-time (≈10 min)</h2>
+    <p class="lead">This connects the Upload Hub to your shared database securely. Done once by whoever manages the site; the team just uses the page after that.</p>
+
+    <div class="setup">
+      <h4>A · Create an Airtable access token</h4>
+      <ol>
+        <li>Go to <code>airtable.com/create/tokens</code> → <strong>Create token</strong>.</li>
+        <li>Scopes: tick <code>data.records:read</code> and <code>data.records:write</code>.</li>
+        <li>Access: add the <strong>Shanghai Pet Expo 2026</strong> base.</li>
+        <li>Create it and <strong>copy the token</strong> (starts with <code>pat…</code>) — you only see it once.</li>
+      </ol>
+    </div>
+
+    <div class="setup">
+      <h4>B · Deploy the Worker on Cloudflare</h4>
+      <ol>
+        <li>Cloudflare dashboard → <strong>Workers &amp; Pages</strong> → <strong>Create</strong> → <strong>Create Worker</strong>. Name it e.g. <code>fraaash-expo</code>.</li>
+        <li>Click <strong>Edit code</strong>, delete the sample, paste in the contents of <code>worker.js</code>, then <strong>Deploy</strong>.</li>
+        <li>Worker → <strong>Settings → Variables and Secrets</strong> → add two secrets:
+          <br/><code>AIRTABLE_TOKEN</code> = your <code>pat…</code> token
+          <br/><code>BASE_ID</code> = <code>appiFmLjs5kj2T84E</code></li>
+        <li>(Optional, recommended) add <code>ALLOW_ORIGIN</code> = your page's address (e.g. <code>https://expo.fraaash.com</code>).</li>
+        <li>Copy the Worker URL (looks like <code>https://fraaash-expo.<i>yourname</i>.workers.dev</code>).</li>
+      </ol>
+    </div>
+
+    <div class="setup">
+      <h4>C · Connect the page &amp; host it</h4>
+      <ol>
+        <li>Open <code>index.html</code>, find <code>CONFIG</code> near the top, paste the Worker URL into <code>WORKER_URL</code>, save.</li>
+        <li>Host the page (your DNS is on Cloudflare, so <strong>Cloudflare Pages</strong> is easiest):
+          Workers &amp; Pages → Create → Pages → upload <code>index.html</code> → add a custom domain like <code>expo.fraaash.com</code>.</li>
+        <li>Open it, click <strong>Log a Supplier</strong> — you'll get the form straight away. Done.</li>
+      </ol>
+      <p class="note">Your root <code>fraaash.com</code> stays on Shopify, untouched. If you specifically need the address <code>fraaash.com/shanghaipetexpo</code> instead of a subdomain, that needs a small Cloudflare Worker route in front — ask and I'll provide it.</p>
+    </div>
+    <div class="divider"></div>
+    <p class="note">Photos and namecards are stored as attachments in the shared database. The token lives only inside the Cloudflare Worker — it is never in the web page, so the public page can't be used to read or wipe your data.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Fraaash · Internal tool · Shanghai Pet Expo 2026 · built for the sourcing team.<br/>
+    Shared data stored securely via Cloudflare Worker + the <strong>Shanghai Pet Expo 2026</strong> database.
+  </div>
+</footer>
+
+<script>
+/* ---------- Tabs ---------- */
+const tabBtns=document.querySelectorAll('nav.tabs button');
+const panels=document.querySelectorAll('section.panel');
+tabBtns.forEach(b=>b.addEventListener('click',()=>{
+  tabBtns.forEach(x=>x.classList.remove('active'));
+  panels.forEach(p=>p.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById(b.dataset.tab).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+
+/* ---------- Admin links ---------- */
+lnkSup.href=CONFIG.BASE_SUPPLIER; lnkProd.href=CONFIG.BASE_PRODUCT; lnkTrend.href=CONFIG.BASE_TREND;
+lnkItin.href=CONFIG.BASE_ITINERARY; lnkVisit.href=CONFIG.BASE_VISITS;
+
+/* ---------- Schemas ---------- */
+const CATS=["Pet Food","Treats & Snacks","Toys","Accessories","Apparel","Grooming","Health & Supplements","Litter & Hygiene","Beds & Furniture","Smart / Tech","Aquatic","Packaging / OEM","Other"];
+const ATTACH={suppliers:{field:"fldhlWw2itJEbiUmL",name:"Namecard"},products:{field:"fldamz66gvJ4GuP65",name:"Photos"},trends:{field:"fld01cWxcFjoI09TG",name:"Photos"}};
+const SCHEMA={
+  suppliers:{title:"Suppliers",icon:"🪪",primary:"Company Name",sub:["Contact Person","Booth Number"],fields:[
+    {n:"Company Name",l:"Company name",t:"text",req:true,full:true},
+    {n:"Contact Person",l:"Contact person",t:"text"},
+    {n:"Title / Role",l:"Title / role",t:"text"},
+    {n:"Phone / WhatsApp",l:"Phone / WhatsApp",t:"tel"},
+    {n:"WeChat ID",l:"WeChat ID",t:"text"},
+    {n:"Email",l:"Email",t:"email"},
+    {n:"Website",l:"Website",t:"url"},
+    {n:"Booth Number",l:"Booth #",t:"text"},
+    {n:"Hall / Zone",l:"Hall / zone",t:"text"},
+    {n:"Country / Region",l:"Country / region",t:"text"},
+    {n:"Product Categories",l:"Categories",t:"multi",opts:CATS,full:true},
+    {n:"Follow-up Status",l:"Follow-up",t:"select",opts:["New","To Contact","Contacted","Sample Requested","Quoted","Negotiating","Closed / Won","Not Pursuing"]},
+    {n:"Interest Level",l:"Interest",t:"rating"},
+    {n:"Date Met",l:"Date met",t:"date"},
+    {n:"Internal Remarks",l:"Remarks",t:"textarea",full:true}
+  ]},
+  products:{title:"Products",icon:"📦",primary:"Product Name",sub:["_supplier","Price Notes"],fields:[
+    {n:"Product Name",l:"Product name",t:"text",req:true,full:true},
+    {n:"Supplier",l:"Supplier",t:"link",full:true},
+    {n:"Category",l:"Category",t:"multi",opts:CATS,full:true},
+    {n:"MOQ",l:"MOQ",t:"number"},
+    {n:"Unit Price",l:"Unit price ($)",t:"number"},
+    {n:"Price Notes",l:"Price notes",t:"text"},
+    {n:"Materials",l:"Materials",t:"text"},
+    {n:"Colors / Variants",l:"Colors / variants",t:"text"},
+    {n:"Status",l:"Status",t:"select",opts:["New","Shortlisted","Sample Requested","Quoted","Ordered","Rejected"]},
+    {n:"Interest Level",l:"Interest",t:"rating"},
+    {n:"Sample Available",l:"Sample available",t:"checkbox"},
+    {n:"Date Logged",l:"Date logged",t:"date"},
+    {n:"Notes",l:"Notes",t:"textarea",full:true}
+  ]},
+  trends:{title:"Trends & Notes",icon:"💡",primary:"Observation",sub:["Category","_relsupplier"],fields:[
+    {n:"Observation",l:"Observation (headline)",t:"text",req:true,full:true},
+    {n:"Category",l:"Category",t:"select",opts:["Product Trend","Packaging / Branding","Pricing","Competitor","Tech / Innovation","Market Insight","Other"]},
+    {n:"Date",l:"Date",t:"date"},
+    {n:"Related Supplier",l:"Related supplier (optional)",t:"link",full:true},
+    {n:"Details",l:"Details",t:"textarea",full:true}
+  ]}
+};
+
+/* ---------- API ---------- */
+const API=()=>CONFIG.WORKER_URL.replace(/\/$/,"");
+const connected=()=>!!CONFIG.WORKER_URL;
+let TEAM_PW="";  // set at login, sent with every request, checked by the Worker
+async function api(path,opts){
+  opts=opts||{};
+  opts.headers=Object.assign({},opts.headers,{"X-Team-Password":TEAM_PW});
+  const r=await fetch(API()+path,opts); const d=await r.json(); if(!r.ok||d.error) throw new Error(d.error||("HTTP "+r.status)); return d;
+}
+const cache={suppliers:null,products:null,trends:null};
+
+/* ---------- Login gate ---------- */
+const loginGate=document.getElementById('loginGate');
+const loginPw=document.getElementById('loginPw');
+const loginBtn=document.getElementById('loginBtn');
+const loginErr=document.getElementById('loginErr');
+async function doLogin(){
+  const pw=(loginPw.value||"").trim();
+  if(!pw){ loginErr.textContent="Please enter the password."; return; }
+  if(!connected()){ loginErr.textContent="Hub isn't connected yet — see the Setup tab."; return; }
+  loginBtn.disabled=true; loginErr.textContent="Checking…";
+  TEAM_PW=pw;
+  try{
+    await api("/api/suppliers");            // 401 if the password is wrong
+    loginGate.classList.add('hidden'); loginErr.textContent="";
+  }catch(e){
+    TEAM_PW="";
+    loginErr.textContent=/password/i.test(e.message)?"Wrong password. Try again.":("Couldn't connect: "+e.message);
+  }finally{ loginBtn.disabled=false; }
+}
+loginBtn.addEventListener('click',doLogin);
+loginPw.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+async function loadList(ent){ const d=await api("/api/"+ent); cache[ent]=d.records||[]; return cache[ent]; }
+function supplierName(recId){ const s=(cache.suppliers||[]).find(r=>r.id===recId); return s? (s.fields["Company Name"]||"(supplier)") : ""; }
+
+/* ---------- Board (list + form) ---------- */
+let current=null;
+const board=document.getElementById('board');
+const boardTitle=document.getElementById('board-title');
+const boardActions=document.getElementById('board-actions');
+const boardBody=document.getElementById('board-body');
+
+document.querySelectorAll('.upcard').forEach(c=>c.addEventListener('click',()=>openEntity(c.dataset.ent)));
+
+async function openEntity(ent){
+  current=ent;
+  document.querySelectorAll('.upcard').forEach(c=>c.classList.toggle('active',c.dataset.ent===ent));
+  board.classList.add('show');
+  boardTitle.textContent=SCHEMA[ent].icon+"  "+SCHEMA[ent].title;
+  boardActions.innerHTML='';
+  board.scrollIntoView({behavior:'smooth',block:'start'});
+  if(!connected()){
+    boardBody.innerHTML='<div class="msg">This hub isn\'t connected yet. Open the <b>Setup</b> tab to link it to your shared database (one-time, ~10 min). Once connected, this button opens the form directly — no Airtable.</div>';
+    return;
+  }
+  const addBtn=document.createElement('button'); addBtn.className='btn sm'; addBtn.textContent='＋ Add new';
+  addBtn.onclick=()=>showForm(ent,null); boardActions.appendChild(addBtn);
+  boardBody.innerHTML='<div class="empty">Loading…</div>';
+  try{
+    if(ent!=='suppliers' && !cache.suppliers) await loadList('suppliers'); // for link names
+    const recs=await loadList(ent);
+    renderList(ent,recs);
+    refreshCounts();
+  }catch(e){ boardBody.innerHTML='<div class="msg err">Couldn\'t load data: '+esc(e.message)+'</div>'; }
+}
+
+function renderList(ent,recs){
+  const sc=SCHEMA[ent];
+  if(!recs.length){ boardBody.innerHTML='<div class="empty">No entries yet. Tap <b>＋ Add new</b> to log the first one.</div>'; return; }
+  const wrap=document.createElement('div'); wrap.className='rows';
+  recs.slice().reverse().forEach(rec=>{
+    const f=rec.fields||{};
+    const row=document.createElement('div'); row.className='row';
+    const att=f[ATTACH[ent].name];
+    const thumb=(att&&att[0]&&att[0].thumbnails&&att[0].thumbnails.small)?att[0].thumbnails.small.url:(att&&att[0]?att[0].url:null);
+    let sub=sc.sub.map(k=>{
+      if(k==='_supplier'){ const s=f["Supplier"]; return s&&s[0]?supplierName(s[0]):""; }
+      if(k==='_relsupplier'){ const s=f["Related Supplier"]; return s&&s[0]?supplierName(s[0]):""; }
+      return f[k]||"";
+    }).filter(Boolean).join(" · ");
+    const badges=[];
+    if(f["Interest Level"]) badges.push('<span class="stars">'+"★".repeat(f["Interest Level"])+'</span>');
+    const st=f["Follow-up Status"]||f["Status"]; if(st) badges.push('<span class="chip">'+esc(st)+'</span>');
+    const nAtt=att?att.length:0; if(nAtt) badges.push('<span class="chip amber">📷 '+nAtt+'</span>');
+    row.innerHTML=(thumb?'<img class="thumb" src="'+thumb+'">':'<div class="thumb ph">'+SCHEMA[ent].icon+'</div>')
+      +'<div class="info"><div class="nm">'+esc(f[sc.primary]||"(untitled)")+'</div><div class="sub">'+esc(sub)+'</div></div>'
+      +'<div class="badges">'+badges.join('')+'</div>';
+    row.onclick=()=>showForm(ent,rec);
+    wrap.appendChild(row);
+  });
+  boardBody.innerHTML=''; boardBody.appendChild(wrap);
+}
+
+/* ---------- Form ---------- */
+let selectedPhotos=[]; // {file, dataUrl}
+let keptPhotos=[];     // existing attachment objects to keep
+
+function showForm(ent,rec){
+  const sc=SCHEMA[ent]; const f=rec?(rec.fields||{}):{};
+  selectedPhotos=[]; keptPhotos=rec&&f[ATTACH[ent].name]?f[ATTACH[ent].name].slice():[];
+  boardActions.innerHTML='';
+  const back=document.createElement('button'); back.className='btn ghost sm'; back.textContent='‹ Back to list';
+  back.onclick=()=>openEntity(ent); boardActions.appendChild(back);
+
+  const form=document.createElement('form'); form.className='entry';
+  sc.fields.forEach(fd=>{
+    const wrap=document.createElement('div'); wrap.className='fld'+(fd.full?' full':'');
+    wrap.innerHTML='<label>'+esc(fd.l)+(fd.req?' *':'')+'</label>';
+    let el;
+    if(fd.t==='textarea'){ el=document.createElement('textarea'); el.value=f[fd.n]||''; }
+    else if(fd.t==='select'){ el=document.createElement('select'); el.innerHTML='<option value="">—</option>'+fd.opts.map(o=>'<option'+(f[fd.n]===o?' selected':'')+'>'+esc(o)+'</option>').join(''); }
+    else if(fd.t==='multi'){ el=document.createElement('div'); el.className='multi'; const cur=f[fd.n]||[];
+      fd.opts.forEach(o=>{ const s=document.createElement('span'); s.className='opt'+(cur.includes(o)?' on':''); s.textContent=o; s.onclick=()=>s.classList.toggle('on'); el.appendChild(s); }); el.dataset.multi=fd.n; }
+    else if(fd.t==='rating'){ el=document.createElement('div'); el.className='rate'; el.dataset.rate=f[fd.n]||0;
+      for(let i=1;i<=5;i++){ const s=document.createElement('span'); s.className='s'+(i<=(f[fd.n]||0)?' on':''); s.textContent='★'; s.onclick=()=>{ el.dataset.rate=(''+el.dataset.rate===''+i)?0:i; el.querySelectorAll('.s').forEach((x,ix)=>x.classList.toggle('on',ix<el.dataset.rate)); }; el.appendChild(s);} }
+    else if(fd.t==='checkbox'){ el=document.createElement('label'); el.className='chk'; const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!f[fd.n]; el.appendChild(cb); el.append(' Yes'); el.dataset.chk=fd.n; el._cb=cb; }
+    else if(fd.t==='link'){ el=document.createElement('select'); el.innerHTML='<option value="">—</option>'+(cache.suppliers||[]).map(s=>{ const cur=f[fd.n]; const on=cur&&cur[0]===s.id; return '<option value="'+s.id+'"'+(on?' selected':'')+'>'+esc(s.fields["Company Name"]||"(supplier)")+'</option>';}).join(''); el.dataset.link=fd.n; }
+    else { el=document.createElement('input'); el.type=(fd.t==='number'?'number':fd.t==='date'?'date':fd.t==='email'?'email':fd.t==='url'?'url':fd.t==='tel'?'tel':'text'); el.value=f[fd.n]!=null?f[fd.n]:''; }
+    el.dataset.name=fd.n; el.dataset.type=fd.t;
+    wrap.appendChild(el); form.appendChild(wrap);
+  });
+
+  // photos
+  const pv=document.createElement('div'); pv.className='fld full';
+  pv.innerHTML='<label>'+esc(ATTACH[ent].name)+' (photos)</label>';
+  const strip=document.createElement('div'); strip.className='photos'; strip.id='photostrip';
+  pv.appendChild(strip); form.appendChild(pv);
+
+  const actions=document.createElement('div'); actions.className='form-actions';
+  const save=document.createElement('button'); save.type='submit'; save.className='btn'; save.textContent=rec?'Save changes':'Save entry';
+  actions.appendChild(save);
+  if(rec){ const del=document.createElement('button'); del.type='button'; del.className='btn danger left'; del.textContent='Delete'; del.onclick=()=>doDelete(ent,rec); actions.appendChild(del); }
+  form.appendChild(actions);
+
+  form.onsubmit=(e)=>{ e.preventDefault(); doSave(ent,rec,form,save); };
+  boardBody.innerHTML=''; boardBody.appendChild(form);
+  renderPhotoStrip(ent);
+}
+
+function renderPhotoStrip(ent){
+  const strip=document.getElementById('photostrip'); if(!strip) return; strip.innerHTML='';
+  keptPhotos.forEach((a,i)=>{ const d=document.createElement('div'); d.className='ph-item';
+    d.innerHTML='<img src="'+((a.thumbnails&&a.thumbnails.small)?a.thumbnails.small.url:a.url)+'"><button type="button" class="rm">✕</button>';
+    d.querySelector('.rm').onclick=()=>{ keptPhotos.splice(i,1); renderPhotoStrip(ent); }; strip.appendChild(d); });
+  selectedPhotos.forEach((p,i)=>{ const d=document.createElement('div'); d.className='ph-item';
+    d.innerHTML='<img src="'+p.dataUrl+'"><button type="button" class="rm">✕</button>';
+    d.querySelector('.rm').onclick=()=>{ selectedPhotos.splice(i,1); renderPhotoStrip(ent); }; strip.appendChild(d); });
+  const add=document.createElement('label'); add.className='ph-add'; add.innerHTML='<span>＋</span>Add photo';
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.multiple=true; inp.style.display='none';
+  inp.onchange=async()=>{ for(const file of inp.files){ const dataUrl=await readFile(file); selectedPhotos.push({file,dataUrl}); } renderPhotoStrip(ent); };
+  add.appendChild(inp); strip.appendChild(add);
+}
+function readFile(file){ return new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file); }); }
+
+function collectFields(form){
+  const fields={};
+  form.querySelectorAll('[data-name]').forEach(el=>{
+    const n=el.dataset.name, t=el.dataset.type;
+    if(t==='multi'){ const vals=[...el.querySelectorAll('.opt.on')].map(o=>o.textContent); if(vals.length) fields[n]=vals; }
+    else if(t==='rating'){ const v=+el.dataset.rate; if(v) fields[n]=v; }
+    else if(t==='checkbox'){ fields[n]=el._cb.checked; }
+    else if(t==='link'){ if(el.value) fields[n]=[el.value]; }
+    else if(t==='number'){ if(el.value!=='') fields[n]=parseFloat(el.value); }
+    else { if(el.value!=='' && el.value!=null) fields[n]=el.value; }
+  });
+  return fields;
+}
+
+async function doSave(ent,rec,form,btn){
+  form.classList.add('saving'); btn.textContent='Saving…';
+  try{
+    const fields=collectFields(form);
+    let recId;
+    if(rec){
+      // update: also reconcile kept photos (handles deletions)
+      const attName=ATTACH[ent].name;
+      fields[attName]=keptPhotos.map(a=>({id:a.id}));
+      await api("/api/"+ent+"/"+rec.id,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields})});
+      recId=rec.id;
+    } else {
+      const created=await api("/api/"+ent,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields})});
+      recId=created.id;
+    }
+    // upload new photos
+    for(const p of selectedPhotos){
+      const b64=p.dataUrl.split(",")[1];
+      await api("/api/"+ent+"/"+recId+"/photo?field="+ATTACH[ent].field,
+        {method:"POST",headers:{"Content-Type":"application/json"},
+         body:JSON.stringify({filename:p.file.name||"photo.jpg",contentType:p.file.type||"image/jpeg",file:b64})});
+    }
+    await loadList(ent); if(ent==='suppliers'){ /* refresh link names */ }
+    openEntity(ent);
+  }catch(e){
+    form.classList.remove('saving'); btn.textContent='Save';
+    alert("Couldn't save: "+e.message);
+  }
+}
+
+async function doDelete(ent,rec){
+  if(!confirm("Delete this entry? This can't be undone.")) return;
+  try{
+    await api("/api/"+ent+"/"+rec.id,{method:"DELETE"});
+    await loadList(ent);
+    openEntity(ent);
+  }catch(e){ alert("Couldn't delete: "+e.message); }
+}
+
+function refreshCounts(){ ["suppliers","products","trends"].forEach(ent=>{ const el=document.getElementById("cnt-"+ent); if(el) el.textContent=(cache[ent]?cache[ent].length:0)+" logged"; }); }
+
+async function preloadCounts(){
+  if(!connected()){ ["suppliers","products","trends"].forEach(e=>{const el=document.getElementById("cnt-"+e); if(el) el.textContent="not connected";}); return; }
+  for(const ent of ["suppliers","products","trends"]){ try{ await loadList(ent); }catch(e){} }
+  refreshCounts();
+}
+function esc(s){return (s==null?"":(""+s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+/* ---------- Itinerary accordion ---------- */
+const DAYS=[
+  {date:"18 Aug · Mon",city:"Shanghai",plan:"抵达 + 3家门店探访",rows:[
+    ["05:00","抵达上海","地铁或打车前往酒店"],["05:30-06:00","入住","汉庭上海龙阳路地铁站店 或 亚朵龙阳路店"],
+    ["06:00-10:30","补觉","养精蓄锐"],["10:30-11:30","早午餐","酒店附近"],
+    ["11:30-12:00","出发","地铁龙阳路→武宁路站，约35分钟"],
+    ["12:00-13:30","【探访1】电力宠物公司","静安区武宁南路189号，潮牌买手店 — 看选品逻辑、陈列、自有品牌",1],
+    ["13:30-14:00","转场","打车前往徐汇区，约15分钟"],
+    ["14:00-15:30","【探访2】Pet Inn Here","徐汇区永嘉路132号，法式生活馆 — 高端洗护动线、进口陈列、会员体系",1],
+    ["15:30-16:00","转场","打车前往杨浦，约25分钟"],
+    ["16:00-17:30","【探访3】狗道宠物（大学路店）","杨浦区大学路128号，沉浸式社区店 — 互动空间、社区运营、年轻客群选品",1],
+    ["17:30-19:00","晚餐","大学路附近"],["19:00-20:00","返回酒店","早休息"]
+  ]},
+  {date:"19 Aug · Tue",city:"Shanghai",plan:"亚宠展 Day 1（关键日）+ 工厂预约",rows:[
+    ["07:00-08:15","起床、早餐",""],["08:15-08:30","步行前往新国际博览中心",""],["08:30-08:50","入场排队","提前官网预登记，扫码入场"],
+    ["09:00-09:30","【核心】帅克宠物展位","争取工厂开放日名额/时间/联系方式。话术：马来西亚从业者，关注鲜肉酶解与高鲜肉粮线",1],
+    ["09:30-10:00","【核心】汉欧生物展位","询问参观可能（承接多品牌代工）",1],
+    ["10:00-10:30","【核心】宠之优品展位","关注鲜食与冻干，争取诸城工厂参观",1],
+    ["10:30-11:00","福贝 / 比瑞吉展位","询问上海工厂是否可预约参观"],
+    ["11:00-12:00","鲜食品牌集中走访","源齿、小鲜粮、奥利的厨房、派膳师、黑米先生 — 工艺特点、代工厂信息"],
+    ["12:00-13:00","午餐","展馆内"],["13:00-15:00","自由逛展","营养品、智能设备、鲜食包装设备"],
+    ["15:00-16:00","青岛明月安欣展位","海藻功能性宠物食品"],["16:00-17:00","整理当日收获","确认工厂预约情况"],
+    ["17:00-18:00","返回酒店休息",""],["18:30-20:00","晚餐",""],["20:00-21:00","决策时刻","根据预约结果决定山东段去哪几个城市"]
+  ]},
+  {date:"20 Aug · Wed",city:"Shanghai",plan:"亚宠展 Day 2 + 论坛",rows:[
+    ["07:00-08:15","起床、早餐",""],["09:00-12:00","继续逛展","补漏昨天未看展商，参加行业论坛"],
+    ["12:00-13:00","午餐",""],["13:00-16:00","继续逛展 / 自由安排","宠物智能设备、包装设备区"],
+    ["16:00-17:00","整理展会资料",""],["17:00-18:00","休息",""],["18:30-20:00","晚餐",""],
+    ["20:00","最终确定山东行程","临沂+泰安 / 临沂+聊城 / 加潍坊"]
+  ]},
+  {date:"21 Aug · Thu",city:"Shanghai",plan:"亚宠展 Day 3 + 医院探访",rows:[
+    ["07:00-08:15","起床、早餐",""],["08:15-08:30","步行前往展馆",""],
+    ["09:00-12:00","亚宠展最后半天","扫尾、拿资料、加深与目标工厂联系"],["12:00-13:00","午餐",""],
+    ["13:30-15:30","【探访4】领华宠物医院（总院）","闵行区虹中路361号 · 提前电话 021-64021120 — 诊疗区、透明手术室",1],
+    ["15:30-15:50","转场","打车约20分钟"],
+    ["16:00-18:00","【探访5】顽皮家族（虹桥总院）","闵行区虹许路731号 · 021-64020338 — 神经外科、骨科学科建设",1],
+    ["18:00-19:00","晚餐",""],["19:00-20:00","整理行李","早休息，明天出发山东"]
+  ]},
+  {date:"22 Aug · Fri",city:"Linyi",plan:"上海 → 临沂，工厂参观",rows:[
+    ["06:30-07:00","起床、早餐",""],["07:00-07:30","退房",""],["07:30-08:15","前往上海虹桥站","地铁2号线"],
+    ["08:30-12:00","高铁 上海虹桥 → 临沂北","G1806（09:05-12:28），约3.5小时"],
+    ["12:00-13:00","抵达临沂，午餐",""],["13:00-13:30","入住","临沂沂南蓝海国际酒店 或 全季临沂北站店"],
+    ["13:30-14:30","前往沂南县","车程约40分钟"],
+    ["14:30-17:00","【核心参观】帅克宠乐梦工厂 + 汉欧生物","全透明走廊、鲜肉酶解车间、高鲜肉粮线、品控实验室、原料仓储（需提前确认拍照许可）",1],
+    ["17:00-17:40","返回临沂市区",""],["17:40-19:00","晚餐","临沂炒鸡、煎饼等鲁菜"],["19:00-20:00","整理参观笔记",""]
+  ]},
+  {date:"23 Aug · Sat",city:"Tai'an→ZZ",plan:"山东多城工厂连访 → 郑州（三选一）",rows:[
+    [null,"路线 A（推荐，最顺路）临沂 → 泰安 → 郑州"],
+    ["07:00-07:30","早餐、退房",""],["07:30-09:00","高铁 临沂北 → 泰安","约1.5小时"],
+    ["09:00-09:30","前往泰安泰宠","泰安站打车约30分钟"],["09:30-11:30","【参观】泰安泰宠","烘焙粮、冻干、鲜食生产线",1],
+    ["11:30-12:30","午餐","泰安当地"],["12:30-13:00","返回泰安站",""],["13:00-15:00","高铁 泰安 → 郑州东","约2小时"],
+    ["15:00-15:30","入住","郑州东站亚朵 或 全季郑州东站店"],["17:30-19:00","晚餐","郑州烩面（合记/萧记）、胡辣汤"],
+    [null,"备选 B　临沂 → 聊城 → 郑州（看乖宝 / 麦富迪）"],
+    ["07:30-10:00","高铁 临沂北 → 聊城西","约2.5小时"],["10:30-12:30","【参观】乖宝宠物（麦富迪）","上市公司，透明工厂，高鲜肉粮与零食",1],
+    ["14:00-16:30","高铁 聊城西 → 郑州东","约2.5小时"],
+    [null,"备选 C　临沂 → 潍坊（诸城）→ 郑州"],
+    ["07:30-09:30","高铁 临沂北 → 潍坊","约2小时"],["10:30-12:30","【参观】宠之优品","冻干、湿粮、鲜食代工",1],
+    ["14:30-18:00","高铁 潍坊 → 郑州东","约3.5小时"]
+  ]},
+  {date:"24 Aug · Sun",city:"Zhengzhou",plan:"郑州工厂 + 门店巡礼",rows:[
+    ["07:30-08:30","起床、早餐",""],
+    ["09:00-12:00","【工厂参观】郑州金派格 或 心粮宠物","需提前邮件确认 — 湿粮/鲜食生产线、原料处理、品控",1],
+    ["12:00-13:00","午餐",""],["13:00-14:30","【探访6】喵星球猫馆","郑东新区，高端猫咪洗护寄养 — 服务标准化流程",1],
+    ["14:30-15:00","转场",""],["15:00-16:30","【探访7】狗道宠物（郑州店）","金水区 — 与上海大学路店对比本地化运营",1],
+    ["16:30-17:30","【探访8】心粮线下体验店","与店员深度交流产品",1],["17:30-19:00","晚餐",""],["19:00-20:00","整理笔记",""]
+  ]},
+  {date:"25 Aug · Mon",city:"Zhengzhou",plan:"最后探访 + 返程",rows:[
+    ["07:00-08:00","起床、早餐",""],["08:00-08:30","退房","行李寄存前台"],
+    ["09:00-11:00","【探访9】派德动物医院","金水区，本土转诊中心 — 了解郑州宠物医疗市场",1],["11:00-12:00","午餐",""],
+    ["12:00-14:00","【探访10】巴布宠物乐园 或 鑫水湾宠物公园","大型宠物乐园 — 训练、寄养、游泳池",1],
+    ["14:00-15:00","返回酒店取行李",""],["15:00-16:30","前往郑州新郑国际机场","城际或打车，约1-1.5小时"],
+    ["16:30-18:00","值机、安检","国际航班提前2-3小时"],["18:00-19:00","候机","整理8天行程笔记"],["20:00","飞机起飞","行程结束"]
+  ]}
+];
+const acc=document.getElementById('acc');
+DAYS.forEach(d=>{
+  let body='<table class="detail"><thead><tr><th>时间</th><th>行程</th><th>详细说明</th></tr></thead><tbody>';
+  d.rows.forEach(r=>{
+    if(r[0]===null){ body+='<tr class="route"><td colspan="3">'+esc(r[1])+'</td></tr>'; return; }
+    body+='<tr'+(r[3]?' class="visit"':'')+'><td class="t-time">'+esc(r[0])+'</td><td class="t-act">'+esc(r[1])+'</td><td>'+esc(r[2])+'</td></tr>';
+  });
+  body+='</tbody></table>';
+  const item=document.createElement('div'); item.className='acc-item';
+  item.innerHTML='<div class="acc-head"><span class="d-date">'+esc(d.date)+'</span><span class="d-city">'+esc(d.city)+'</span><span class="d-plan">'+esc(d.plan)+'</span><span class="chev">▾</span></div><div class="acc-body">'+body+'</div>';
+  item.querySelector('.acc-head').addEventListener('click',()=>item.classList.toggle('open'));
+  acc.appendChild(item);
+});
+
+/* ---------- QR + counts ---------- */
+try{ new QRCode(document.getElementById('qr'),{text:window.location.href,width:120,height:120,colorDark:"#0f766e"}); }catch(e){}
+preloadCounts();
+</script>
+</body>
+</html>
