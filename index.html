@@ -190,6 +190,10 @@
   .todoitem.done .tt{text-decoration:line-through;color:var(--muted)}
   .todoitem .tcat{font-size:11px;font-weight:700;color:var(--teal-d);background:#eef5f3;border-radius:6px;padding:2px 8px}
 
+  ul.warnlist{list-style:none;padding:0;margin:10px 0}
+  ul.warnlist li{padding:8px 0 8px 28px;position:relative;border-bottom:1px dashed var(--line);font-size:14px}
+  ul.warnlist li:before{content:"⚠";position:absolute;left:2px;top:8px;color:var(--amber-d)}
+  .srcnote{font-weight:400;color:var(--muted);font-size:13px}
   /* LOGIN GATE */
   #loginGate{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,var(--teal-d),var(--teal));display:flex;align-items:center;justify-content:center;padding:20px}
   #loginGate.hidden{display:none}
@@ -239,10 +243,10 @@
     <h1>Shanghai Pet Expo 2026 — Sourcing Hub</h1>
     <div class="sub">Everything for the trip, and one shared place to log every supplier, product & idea.</div>
     <div class="facts">
-      <span class="fact">📅 Expo 19–23 Aug 2026</span>
-      <span class="fact">🧳 Trip 18–25 Aug</span>
-      <span class="fact">📍 Shanghai · Shandong · Zhengzhou</span>
-      <span class="fact">🐾 Pet Fair Asia (28th)</span>
+      <span class="fact">📅 Trip 18–26 Aug 2026*</span>
+      <span class="fact">🚄 KL → Shanghai → 临沂 → 潍坊 → 济南 → KL</span>
+      <span class="fact">📍 Shanghai · 临沂 · 潍坊 · 济南</span>
+      <span class="fact">🐾 Pet Expo · Shanghai</span>
     </div>
   </div>
 </header>
@@ -291,42 +295,76 @@
 <section class="panel" id="guide">
   <div class="wrap">
     <h2>Trip Guide</h2>
-    <p class="lead">Pet Fair Asia is the largest pet-industry show in the world — ~2,600 exhibitors across 17 indoor + 10 outdoor halls (~320,000 sqm) and ~500k+ visitors. Then a Shandong + Henan factory tour. Come with a plan.</p>
+    <p class="lead">Shanghai – Shandong Business Trip · KL → Shanghai → Lin Yi → Wei Fang → Ji Nan → KL · 18–26 August <span class="srcnote">(year 2026 is from the source filename only)</span>. Themes: products &amp; supplier sourcing, China trends vs. gaps in Malaysia, market benchmarking, pet-expo attendance, factory / kitchen / company / store visits.</p>
 
+    <h3>Purpose</h3>
     <div class="cards">
-      <div class="card"><span class="pill">Why we're here</span><h4>Source products & suppliers</h4><p>Find OEM/ODM partners and ready lines. Capture every card and product into the Upload Hub.</p></div>
-      <div class="card"><span class="pill">Why we're here</span><h4>Read the trends</h4><p>Themed zones — Human-Pet Lifestyle, Pet Wellness & Elderly Care, Pet Life Trend Hall. Log ideas in the Trends tab.</p></div>
-      <div class="card"><span class="pill">Why we're here</span><h4>Benchmark the market</h4><p>Pricing, packaging, competitors, stores & hospitals. Photos + notes beat memory a week later.</p></div>
+      <div class="card"><span class="pill">1</span><h4>Products &amp; Suppliers Sourcing</h4><p>Find suppliers for our planned products &amp; potential opportunities.</p></div>
+      <div class="card"><span class="pill">2</span><h4>Understanding the Trends</h4><p>Understand the trend happening in China, and identify the potential gaps in Malaysia.</p></div>
+      <div class="card"><span class="pill">3</span><h4>Benchmarking Market</h4><p>Take notes of the pricing, design, competitors and market leaders for improving our brand and products.</p></div>
     </div>
 
-    <h3>Key facts</h3>
+    <h3>Expected Outcomes</h3>
     <ul class="tick">
-      <li><strong>Event:</strong> Pet Fair Asia 2026 (28th edition) — Shanghai Pet Expo</li>
-      <li><strong>Dates:</strong> 19–23 August 2026 · 3 B2B/trade days (19–21) + 2 public days (22–23)</li>
-      <li><strong>Venue:</strong> Shanghai New International Expo Centre (SNIEC), 2345 Longyang Rd, Pudong</li>
-      <li><strong>Our trip:</strong> 18–25 August — Shanghai → Linyi → Tai'an → Zhengzhou</li>
-      <li><strong>Best sourcing days:</strong> the B2B days (19–21) — quieter, decision-makers on booth</li>
+      <li><strong>List of Products &amp; Suppliers</strong> — find suitable suppliers for our current and future product needs.</li>
+      <li><strong>Potential Ideas to Explore in MY</strong> — identify the trends in China and compare to Malaysia: what is lacking and what is worth bringing in.</li>
+      <li><strong>List of Improvements</strong> — suggestions to benchmark our performance, e.g. Customer Journey, purchasing experience.</li>
     </ul>
 
-    <h3>Before you go — checklist</h3>
-    <ul class="tick">
-      <li>Register/pre-badge on the official Pet Fair Asia site; save the QR badge offline</li>
-      <li>WeChat installed + set up (primary channel for China suppliers); WhatsApp as backup</li>
-      <li>Alipay / WeChat Pay linked to a card for cabs, food, deposits</li>
-      <li>eSIM or roaming + a VPN set up before landing</li>
-      <li>Plenty of your own namecards (bring 2–3× what you think)</li>
-      <li>Phone storage cleared for photos; power bank for long hall days</li>
-      <li>12306 booked for the HSR legs (Shanghai→Linyi, and the Shandong→Zhengzhou route)</li>
-      <li>This Upload Hub bookmarked on every team member's phone</li>
-    </ul>
+    <h3>Brief Itinerary <span class="srcnote">— When and How Will We Go?</span></h3>
+    <table class="detail"><thead><tr><th>Date</th><th>Time</th><th>Movement</th><th>Duration</th></tr></thead><tbody>
+      <tr><td>18 Aug</td><td>00:05</td><td>Depart from KL</td><td>5.5 Hours</td></tr>
+      <tr><td>22 Aug</td><td>12:00</td><td>Shanghai to Lin Yi</td><td>3.5 Hours</td></tr>
+      <tr><td>24 Aug</td><td>10:00</td><td>Lin Yi to Wei Fang</td><td>2 Hours</td></tr>
+      <tr><td>25 Aug</td><td>14:00</td><td>Wei Fang to Ji Nan</td><td>1 Hour</td></tr>
+      <tr><td>26 Aug</td><td>20:00</td><td>Ji Nan to KL</td><td>5.5 Hours</td></tr>
+    </tbody></table>
+    <p class="note">Source remark: “Double check in the train tickets &amp; its timing.” These brief dates/times conflict with the detailed day-by-day plan — kept as-is, see <b>Pending &amp; to-confirm</b> below.</p>
 
-    <h3>At the booth — capture routine</h3>
-    <ul class="tick">
-      <li>Namecard → Upload Hub → <strong>Log a Supplier</strong> → photo the card, add booth #</li>
-      <li>Interesting product → <strong>Log a Product</strong> → 2–3 photos, MOQ, target price, pick the supplier</li>
-      <li>Rate interest 1–5 while it's fresh so shortlisting back home is fast</li>
-      <li>Ask for: MOQ, FOB price, lead time, customization/OEM, samples — note in the form</li>
-      <li>Spotted a trend? → <strong>Log a Trend / Note</strong> before you forget</li>
+    <h3>Transport Guide <span class="srcnote">— planning estimates only</span></h3>
+    <table class="detail"><thead><tr><th>Route</th><th>Duration</th><th>Cost</th></tr></thead><tbody>
+      <tr><td>Shanghai 上海 → Lin Yi 临沂</td><td>3.5 hours</td><td>RMB 350 – 400</td></tr>
+      <tr><td>Lin Yi 临沂 → Wei Fang 潍坊</td><td>2 hours</td><td>RMB 150 – 200</td></tr>
+      <tr><td>Wei Fang 潍坊 → Ji Nan 济南</td><td>1 hour</td><td>RMB 80 – 100</td></tr>
+      <tr><td>Ji Nan 济南 → Kuala Lumpur 吉隆坡</td><td>10 hours</td><td>Not stated</td></tr>
+    </tbody></table>
+    <p class="note">Source says to double-check train tickets and timing. Note: Ji Nan → KL is 10 hours here vs 5.5 hours in the brief itinerary — unresolved.</p>
+
+    <h3>Targets — Factories · Suppliers · Kitchens · Stores</h3>
+    <div class="cards">
+      <div class="card"><span class="pill">Shanghai</span><h4>Stores &amp; kitchens</h4><p>电力宠物公司（静安区武宁南路189号）· Pet Inn Here（徐汇区永嘉路132号）· 狗道宠物大学路店（杨浦区大学路128号）· 源齿 Born Tooth · ManKee 馒奇 · 致宠鲜餐 · 奥利的厨房 · additional pet stores (not named)</p></div>
+      <div class="card"><span class="pill">Lin Yi / nearby</span><h4>Factories</h4><p>汉欧生物 · 帅克宠物 · 浩克宠物 · 汇聚 · 德海</p></div>
+      <div class="card"><span class="pill">Wei Fang</span><h4>Factories</h4><p>宜尔康 · 宜尔康冻干宠粮 · 路斯股份 · 宠之优品</p></div>
+    </div>
+    <p class="note">Expo booth companies to approach for factory visits: three <b>Pending</b> entries on 19 Aug and three <b>Pending</b> on 20 Aug.</p>
+
+    <h3>Suggested extra stop</h3>
+    <div class="card">
+      <h4>临沂宠物用品批发市场</h4>
+      <p><strong>地址：</strong>临沂市兰山区</p>
+      <p><strong>为什么值得看：</strong>临沂是中国北方最大的宠物用品集散地之一，批发市场集中了大量猫狗粮、零食、用品、笼具等</p>
+      <p><strong>能看到什么：</strong>线下批发生态、产品价格带、什么品类走量最大</p>
+      <p><strong>建议时间：</strong>1-1.5小时</p>
+      <p class="note">Source-layout note: this card appears under the deck’s “Factories in Wei Fang” column, but the name / address is 临沂 / 临沂市兰山区 — not classified as Wei Fang without confirmation.</p>
+    </div>
+
+    <h3>⚠ Pending &amp; to-confirm <span class="srcnote">(unresolved items from the source — kept visible on purpose)</span></h3>
+    <ul class="warnlist">
+      <li><b>Day 1 crosses midnight:</b> 18 Aug lists KLIA arrival 8:00–9:00, check-in/dinner 20:00–00:00, flight 00:05–5:30, airport checkout 05:30–07:00, then Shanghai visits from 9:00 — the sequence does not fit cleanly in one date.</li>
+      <li><b>Shanghai → Lin Yi timing:</b> brief says 22 Aug 12:00; detailed plan heads to 上海虹桥高铁站 at 10:00–11:00 then “Lunch / Travelling” 11:00–13:00, no confirmed train time.</li>
+      <li><b>Lin Yi → Wei Fang date/time:</b> brief says 24 Aug 10:00; detailed plan does 临沂北→潍坊 on 23 Aug 18:00–20:00, hotel check-in 22:00–23:00.</li>
+      <li><b>Ji Nan → KL date/time:</b> brief says 26 Aug 20:00 (5.5 hrs); detailed plan starts the flight sequence 25 Aug 20:45, connects via Shanghai, departs KUL 00:10, arrives 6:05.</li>
+      <li><b>Final-route duration:</b> transport guide says Ji Nan → KL 10 hours; brief itinerary says 5.5 hours.</li>
+      <li><b>Return-day airport overlap:</b> “Depart to ShangHai Airport” 20:45–22:20 vs “Transit in Shanghai Airport” 20:30–00:10 (transit starts 15 min before departure).</li>
+      <li><b>Day numbering:</b> 23 Aug = Day 6, 24 Aug = Day 7, but 25 Aug is labelled “Day 6” again.</li>
+      <li><b>Repeated label:</b> 20 Aug (Day 3) ends with “Team Short Discussion Before Day 3”.</li>
+      <li><b>Market classification:</b> 临沂宠物用品批发市场 is placed under “Factories in Wei Fang” but is in 临沂市兰山区.</li>
+      <li><b>Expo targets pending:</b> 3 Pending key target companies on 19 Aug, 3 on 20 Aug.</li>
+      <li><b>Train confirmation:</b> “Double check in the train tickets &amp; its timing.”</li>
+      <li><b>Not provided by source:</b> expo formal name / venue, flight numbers, train numbers, confirmed ticket times, most hotel names / addresses, the specific Shanghai airport for the connection.</li>
+      <li><b>Unallocated gaps:</b> 14:00–15:00 &amp; 16:00–17:00 on 22 Aug, 20:00–22:00 on 23 Aug, 20:00–21:00 on 24 Aug — not filled.</li>
+      <li><b>Source wording kept as-is:</b> “Back Wei Fang”, “Visit companies booth to ask for factory visit”, “In flight, depart to KUL”.</li>
+      <li><b>Year:</b> 2026 comes from the source filename, not the itinerary slides.</li>
     </ul>
   </div>
 </section>
@@ -335,9 +373,9 @@
 <section class="panel" id="schedule">
   <div class="wrap">
     <h2>Schedule</h2>
-    <p class="lead">The full 8-day plan — Shanghai (stores + expo + hospitals), then the Shandong factory belt, then Zhengzhou. <strong>Tap any day to expand the full time-by-time detail.</strong></p>
+    <p class="lead">The full plan — KL → Shanghai (stores · expo · kitchens) → 临沂 → 潍坊 → 济南 → KL, 18–26 Aug. <strong>Tap any day for the time-by-time detail.</strong> Visit stops are highlighted.</p>
     <div class="acc" id="acc"></div>
-    <p class="note">Shandong routing (Day 6) is decided on expo Day 2–3 depending on which factory appointments land — all three route options (A/B/C) are shown when you expand that day.</p>
+    <p class="note">Where the brief itinerary and this detailed plan disagree on dates/times, both are shown as-is — see <b>Pending &amp; to-confirm</b> in the Trip Guide tab.</p>
   </div>
 </section>
 
@@ -708,84 +746,86 @@ async function loadTodo(){
 
 /* ---------- Itinerary accordion ---------- */
 const DAYS=[
-  {date:"18 Aug · Mon",city:"Shanghai",plan:"抵达 + 3家门店探访",rows:[
-    ["05:00","抵达上海","地铁或打车前往酒店"],["05:30-06:00","入住","汉庭上海龙阳路地铁站店 或 亚朵龙阳路店"],
-    ["06:00-10:30","补觉","养精蓄锐"],["10:30-11:30","早午餐","酒店附近"],
-    ["11:30-12:00","出发","地铁龙阳路→武宁路站，约35分钟"],
-    ["12:00-13:30","【探访1】电力宠物公司","静安区武宁南路189号，潮牌买手店 — 看选品逻辑、陈列、自有品牌",1],
-    ["13:30-14:00","转场","打车前往徐汇区，约15分钟"],
-    ["14:00-15:30","【探访2】Pet Inn Here","徐汇区永嘉路132号，法式生活馆 — 高端洗护动线、进口陈列、会员体系",1],
-    ["15:30-16:00","转场","打车前往杨浦，约25分钟"],
-    ["16:00-17:30","【探访3】狗道宠物（大学路店）","杨浦区大学路128号，沉浸式社区店 — 互动空间、社区运营、年轻客群选品",1],
-    ["17:30-19:00","晚餐","大学路附近"],["19:00-20:00","返回酒店","早休息"]
+  {date:"18 Aug · Tue",city:"Shanghai",plan:"Day 1: Depart in KUL, Landing & First Day Adjustment",rows:[
+    ["8:00 – 9:00","Arrive at KLIA"],
+    ["20:00 – 00:00","Check In & Dinner"],
+    ["00:05 – 5:30","On Flight"],
+    ["05:30-07:00","Check out at Airport"],
+    ["7:00 – 9:00","Breakfast"],
+    ["9:00 – 12:00","Visit: 电力宠物公司（静安区武宁南路189号）",1],
+    ["12:00 – 14:00","Visit: Pet Inn Here（徐汇区永嘉路132号）",1],
+    ["14:00 – 16:00","Visit: 狗道宠物大学路店（杨浦区大学路128号）",1],
+    ["16:00 – 18:00","Visit: 源齿 Born Tooth",1],
+    ["18:00 – 21:00","Dinner & Free time"],
+    ["21:00 – 23:00","Team Short Discussion Before the Expo Day"]
   ]},
-  {date:"19 Aug · Tue",city:"Shanghai",plan:"亚宠展 Day 1（关键日）+ 工厂预约",rows:[
-    ["07:00-08:15","起床、早餐",""],["08:15-08:30","步行前往新国际博览中心",""],["08:30-08:50","入场排队","提前官网预登记，扫码入场"],
-    ["09:00-09:30","【核心】帅克宠物展位","争取工厂开放日名额/时间/联系方式。话术：马来西亚从业者，关注鲜肉酶解与高鲜肉粮线",1],
-    ["09:30-10:00","【核心】汉欧生物展位","询问参观可能（承接多品牌代工）",1],
-    ["10:00-10:30","【核心】宠之优品展位","关注鲜食与冻干，争取诸城工厂参观",1],
-    ["10:30-11:00","福贝 / 比瑞吉展位","询问上海工厂是否可预约参观"],
-    ["11:00-12:00","鲜食品牌集中走访","源齿、小鲜粮、奥利的厨房、派膳师、黑米先生 — 工艺特点、代工厂信息"],
-    ["12:00-13:00","午餐","展馆内"],["13:00-15:00","自由逛展","营养品、智能设备、鲜食包装设备"],
-    ["15:00-16:00","青岛明月安欣展位","海藻功能性宠物食品"],["16:00-17:00","整理当日收获","确认工厂预约情况"],
-    ["17:00-18:00","返回酒店休息",""],["18:30-20:00","晚餐",""],["20:00-21:00","决策时刻","根据预约结果决定山东段去哪几个城市"]
+  {date:"19 Aug · Wed",city:"Shanghai",plan:"Day 2: Full Force on Pet Expo, let’s go!",rows:[
+    ["9:00 – 10:00","Breakfast"],
+    ["11:00 – 18:00","Registration & Start the Visit. Main Task: Visit companies booth to ask for factory visit. Key Target Company: Pending; Pending; Pending."],
+    ["18:00 – 21:00","Dinner & Free Time"],
+    ["22:00 – 23:00","Team Short Discussion Before Day 3"]
   ]},
-  {date:"20 Aug · Wed",city:"Shanghai",plan:"亚宠展 Day 2 + 论坛",rows:[
-    ["07:00-08:15","起床、早餐",""],["09:00-12:00","继续逛展","补漏昨天未看展商，参加行业论坛"],
-    ["12:00-13:00","午餐",""],["13:00-16:00","继续逛展 / 自由安排","宠物智能设备、包装设备区"],
-    ["16:00-17:00","整理展会资料",""],["17:00-18:00","休息",""],["18:30-20:00","晚餐",""],
-    ["20:00","最终确定山东行程","临沂+泰安 / 临沂+聊城 / 加潍坊"]
+  {date:"20 Aug · Thu",city:"Shanghai",plan:"Day 3: Talks & Summits",rows:[
+    ["9:00 – 10:00","Breakfast"],
+    ["11:00 – 18:00","Registration & Start the Visit. Main Task: Visit companies booth to ask for factory visit. Key Target Company: Pending; Pending; Pending."],
+    ["18:00 – 21:00","Dinner & Free Time"],
+    ["22:00 – 23:00","Team Short Discussion Before Day 3"]
   ]},
-  {date:"21 Aug · Thu",city:"Shanghai",plan:"亚宠展 Day 3 + 医院探访",rows:[
-    ["07:00-08:15","起床、早餐",""],["08:15-08:30","步行前往展馆",""],
-    ["09:00-12:00","亚宠展最后半天","扫尾、拿资料、加深与目标工厂联系"],["12:00-13:00","午餐",""],
-    ["13:30-15:30","【探访4】领华宠物医院（总院）","闵行区虹中路361号 · 提前电话 021-64021120 — 诊疗区、透明手术室",1],
-    ["15:30-15:50","转场","打车约20分钟"],
-    ["16:00-18:00","【探访5】顽皮家族（虹桥总院）","闵行区虹许路731号 · 021-64020338 — 神经外科、骨科学科建设",1],
-    ["18:00-19:00","晚餐",""],["19:00-20:00","整理行李","早休息，明天出发山东"]
+  {date:"21 Aug · Fri",city:"Shanghai",plan:"Day 4: Final Day in Expo & Visiting Shanghai’s Factories / Kitchens",rows:[
+    ["9:00 – 10:00","Breakfast"],
+    ["11:00 – 14:00","Final visit of booths in Shanghai"],
+    ["15:00 – 18:00","Visit: ManKee 馒奇 / 致宠鲜餐 / 奥利的厨房",1],
+    ["18:00 – 20:00","Visit: Last visit to pet stores",1],
+    ["22:00 – 23:00","Team Discussion for Next Day Plan"]
   ]},
-  {date:"22 Aug · Fri",city:"Linyi",plan:"上海 → 临沂，工厂参观",rows:[
-    ["06:30-07:00","起床、早餐",""],["07:00-07:30","退房",""],["07:30-08:15","前往上海虹桥站","地铁2号线"],
-    ["08:30-12:00","高铁 上海虹桥 → 临沂北","G1806（09:05-12:28），约3.5小时"],
-    ["12:00-13:00","抵达临沂，午餐",""],["13:00-13:30","入住","临沂沂南蓝海国际酒店 或 全季临沂北站店"],
-    ["13:30-14:30","前往沂南县","车程约40分钟"],
-    ["14:30-17:00","【核心参观】帅克宠乐梦工厂 + 汉欧生物","全透明走廊、鲜肉酶解车间、高鲜肉粮线、品控实验室、原料仓储（需提前确认拍照许可）",1],
-    ["17:00-17:40","返回临沂市区",""],["17:40-19:00","晚餐","临沂炒鸡、煎饼等鲁菜"],["19:00-20:00","整理参观笔记",""]
+  {date:"22 Aug · Sat",city:"上海→临沂",plan:"Day 5: Shanghai to Lin Yi",rows:[
+    ["9:00 – 10:00","Breakfast & Checkout"],
+    ["10:00 – 11:00","Head to 上海虹桥高铁站 上海虹桥→临沂北"],
+    ["11:00 – 13:00","Lunch / Travelling"],
+    ["15:00 – 16:00","Arrive at Lin Yi, head to Yi Nan 沂南县"],
+    ["17:00 – 18:00","Visit: 汉欧生物 + 帅克宠物",1],
+    ["18:00 – 19:00","Back to Lin Yi"],
+    ["19:00 – 21:00","Dinner & Free time"],
+    ["21:00 – 22:00","Back to Hotel"],
+    ["22:00 – 23:00","Team Discussion Before the Next Day"]
   ]},
-  {date:"23 Aug · Sat",city:"Tai'an→ZZ",plan:"山东多城工厂连访 → 郑州（三选一）",rows:[
-    [null,"路线 A（推荐，最顺路）临沂 → 泰安 → 郑州"],
-    ["07:00-07:30","早餐、退房",""],["07:30-09:00","高铁 临沂北 → 泰安","约1.5小时"],
-    ["09:00-09:30","前往泰安泰宠","泰安站打车约30分钟"],["09:30-11:30","【参观】泰安泰宠","烘焙粮、冻干、鲜食生产线",1],
-    ["11:30-12:30","午餐","泰安当地"],["12:30-13:00","返回泰安站",""],["13:00-15:00","高铁 泰安 → 郑州东","约2小时"],
-    ["15:00-15:30","入住","郑州东站亚朵 或 全季郑州东站店"],["17:30-19:00","晚餐","郑州烩面（合记/萧记）、胡辣汤"],
-    [null,"备选 B　临沂 → 聊城 → 郑州（看乖宝 / 麦富迪）"],
-    ["07:30-10:00","高铁 临沂北 → 聊城西","约2.5小时"],["10:30-12:30","【参观】乖宝宠物（麦富迪）","上市公司，透明工厂，高鲜肉粮与零食",1],
-    ["14:00-16:30","高铁 聊城西 → 郑州东","约2.5小时"],
-    [null,"备选 C　临沂 → 潍坊（诸城）→ 郑州"],
-    ["07:30-09:30","高铁 临沂北 → 潍坊","约2小时"],["10:30-12:30","【参观】宠之优品","冻干、湿粮、鲜食代工",1],
-    ["14:30-18:00","高铁 潍坊 → 郑州东","约3.5小时"]
+  {date:"23 Aug · Sun",city:"临沂→潍坊",plan:"Day 6: Lin Yi to Wei Fang",rows:[
+    ["9:00 – 10:00","Breakfast & Checkout"],
+    ["10:00 – 11:00","Head to 沂水县"],
+    ["11:00 – 13:00","Visit: 浩克宠物",1],
+    ["13:00 – 14:00","Lunch"],
+    ["14:00 – 18:00","Head to 汇聚 / 德海 to visit factories",1],
+    ["18:00 – 20:00","Head to 高铁站 (临沂北→潍坊)"],
+    ["22:00 – 23:00","Check in to 潍坊酒店 & Rest"]
   ]},
-  {date:"24 Aug · Sun",city:"Zhengzhou",plan:"郑州工厂 + 门店巡礼",rows:[
-    ["07:30-08:30","起床、早餐",""],
-    ["09:00-12:00","【工厂参观】郑州金派格 或 心粮宠物","需提前邮件确认 — 湿粮/鲜食生产线、原料处理、品控",1],
-    ["12:00-13:00","午餐",""],["13:00-14:30","【探访6】喵星球猫馆","郑东新区，高端猫咪洗护寄养 — 服务标准化流程",1],
-    ["14:30-15:00","转场",""],["15:00-16:30","【探访7】狗道宠物（郑州店）","金水区 — 与上海大学路店对比本地化运营",1],
-    ["16:30-17:30","【探访8】心粮线下体验店","与店员深度交流产品",1],["17:30-19:00","晚餐",""],["19:00-20:00","整理笔记",""]
+  {date:"24 Aug · Mon",city:"潍坊",plan:"Day 7: Wei Fang",rows:[
+    ["9:00 – 10:00","Breakfast & Checkout"],
+    ["10:00 – 11:00","Head to 宜尔康"],
+    ["11:00 – 13:00","Visit: 宜尔康冻干宠粮",1],
+    ["13:00 – 14:00","Lunch"],
+    ["14:00 – 16:00","Visit: 路斯股份",1],
+    ["16:00 – 19:00","Visit: 宠之优品",1],
+    ["19:00 – 20:00","Back Wei Fang"],
+    ["21:00 – 23:00","Dinner & Rest"]
   ]},
-  {date:"25 Aug · Mon",city:"Zhengzhou",plan:"最后探访 + 返程",rows:[
-    ["07:00-08:00","起床、早餐",""],["08:00-08:30","退房","行李寄存前台"],
-    ["09:00-11:00","【探访9】派德动物医院","金水区，本土转诊中心 — 了解郑州宠物医疗市场",1],["11:00-12:00","午餐",""],
-    ["12:00-14:00","【探访10】巴布宠物乐园 或 鑫水湾宠物公园","大型宠物乐园 — 训练、寄养、游泳池",1],
-    ["14:00-15:00","返回酒店取行李",""],["15:00-16:30","前往郑州新郑国际机场","城际或打车，约1-1.5小时"],
-    ["16:30-18:00","值机、安检","国际航班提前2-3小时"],["18:00-19:00","候机","整理8天行程笔记"],["20:00","飞机起飞","行程结束"]
+  {date:"25–26 Aug · Tue",city:"潍坊→济南→KL",plan:"Day 6: Back to Kampung!",rows:[
+    ["9:00 – 11:00","Breakfast & Checkout"],
+    ["11:00 – 12:00","Head to 潍坊高铁站 (潍坊→济南高铁)"],
+    ["14:00 – 15:00","Arrive at Ji Nan"],
+    ["15:00 – 16:00","Head to Ji Nan Airport 济南遥墙机场"],
+    ["16:00 – 20:00","Check in Flight and Rest at Airport"],
+    ["20:45 – 22:20","Depart to ShangHai Airport"],
+    ["20:30 – 00:10","Transit in Shanghai Airport"],
+    ["00:10 – 6:05","In flight, depart to KUL"],
+    ["6:05 – 7:00","Check out and take KLIA Transit back to KL"]
   ]}
 ];
 const acc=document.getElementById('acc');
 DAYS.forEach(d=>{
-  let body='<table class="detail"><thead><tr><th>时间</th><th>行程</th><th>详细说明</th></tr></thead><tbody>';
+  let body='<table class="detail"><thead><tr><th>时间 Time</th><th>行程 Plan</th></tr></thead><tbody>';
   d.rows.forEach(r=>{
-    if(r[0]===null){ body+='<tr class="route"><td colspan="3">'+esc(r[1])+'</td></tr>'; return; }
-    body+='<tr'+(r[3]?' class="visit"':'')+'><td class="t-time">'+esc(r[0])+'</td><td class="t-act">'+esc(r[1])+'</td><td>'+esc(r[2])+'</td></tr>';
+    if(r[0]===null){ body+='<tr class="route"><td colspan="2">'+esc(r[1])+'</td></tr>'; return; }
+    body+='<tr'+(r[2]?' class="visit"':'')+'><td class="t-time">'+esc(r[0])+'</td><td class="t-act">'+esc(r[1])+'</td></tr>';
   });
   body+='</tbody></table>';
   const item=document.createElement('div'); item.className='acc-item';
