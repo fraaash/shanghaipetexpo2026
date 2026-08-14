@@ -190,6 +190,19 @@
   .todoitem.done .tt{text-decoration:line-through;color:var(--muted)}
   .todoitem .tcat{font-size:11px;font-weight:700;color:var(--teal-d);background:#eef5f3;border-radius:6px;padding:2px 8px}
 
+  .coarea{margin:16px 0}
+  .coareahd{font-weight:800;color:var(--teal-d);font-size:16px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .cocount{font-size:12px;font-weight:700;color:var(--muted);background:#eef5f3;border-radius:999px;padding:2px 9px}
+  .cocard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow)}
+  .cotop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .coname{font-weight:700}
+  .costars{color:var(--amber);font-size:13px;white-space:nowrap}
+  .cometa{color:var(--muted);font-size:13px;margin-top:3px}
+  .cotags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+  .costat{font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px}
+  .costat.sok{background:#e7f6ee;color:var(--good)} .costat.swarn{background:#fdeede;color:var(--amber-d)} .costat.smut{background:#eef1f0;color:var(--muted)}
+  .cotime{font-size:12px;color:var(--teal-d);background:#eef5f3;border-radius:6px;padding:2px 8px}
+  .corem{font-size:12px;color:var(--muted)}
   ul.warnlist{list-style:none;padding:0;margin:10px 0}
   ul.warnlist li{padding:8px 0 8px 28px;position:relative;border-bottom:1px dashed var(--line);font-size:14px}
   ul.warnlist li:before{content:"⚠";position:absolute;left:2px;top:8px;color:var(--amber-d)}
@@ -257,6 +270,7 @@
     <button data-tab="guide">📖 Trip Guide</button>
     <button data-tab="schedule">🗓 Schedule</button>
     <button data-tab="todo">✅ To-Do</button>
+    <button data-tab="companies">🏢 Companies</button>
   </div>
 </nav>
 
@@ -270,8 +284,7 @@
       <div class="upcard solo" id="logBtn"><div class="ico">＋</div><h4>Log an entry</h4><p>Supplier · Product · Note — one form</p></div>
     </div>
     <div class="countbar">
-      <span class="cpill">🪪 <b id="cnt-suppliers">—</b> suppliers</span>
-      <span class="cpill">📦 <b id="cnt-products">—</b> products</span>
+      <span class="cpill">🏢 <b id="cnt-suppliers">—</b> companies</span>
       <span class="cpill">💡 <b id="cnt-trends">—</b> notes</span>
     </div>
 
@@ -388,6 +401,15 @@
   </div>
 </section>
 
+<!-- ================= COMPANIES ================= -->
+<section class="panel" id="companies">
+  <div class="wrap">
+    <h2>Companies</h2>
+    <p class="lead">The full company / factory visit list, grouped by area. Tap a company to see its details. Sorted by rating within each area.</p>
+    <div id="companies-body"><div class="empty">Loading…</div></div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     Fraaash · Internal tool · Shanghai Pet Expo 2026 · built for the sourcing team.<br/>
@@ -404,38 +426,35 @@ tabBtns.forEach(b=>b.addEventListener('click',()=>{
   panels.forEach(p=>p.classList.remove('active'));
   b.classList.add('active');
   document.getElementById(b.dataset.tab).classList.add('active');
-  if(b.dataset.tab==='todo') loadTodo();
+  clearInterval(todoTimer); todoTimer=null;
+  if(b.dataset.tab==='todo'){ loadTodo(); todoTimer=setInterval(loadTodo,20000); }
+  if(b.dataset.tab==='companies') loadCompanies();
   window.scrollTo({top:0,behavior:'smooth'});
 }));
+let todoTimer=null;
 
 /* ---------- Schemas ---------- */
 const CATS=["Pet Food","Treats & Snacks","Toys","Accessories","Apparel","Grooming","Health & Supplements","Litter & Hygiene","Beds & Furniture","Smart / Tech","Aquatic","Packaging / OEM","Other"];
-const ATTACH={suppliers:{field:"fldhlWw2itJEbiUmL",name:"Namecard"},products:{field:"fldamz66gvJ4GuP65",name:"Photos"},trends:{field:"fld01cWxcFjoI09TG",name:"Photos"}};
+const ATTACH={
+  suppliers:[{field:"fldhlWw2itJEbiUmL",name:"Namecard",label:"Namecard photo(s)"},{field:"fldNBAamfe0a7kSUX",name:"Product Photos",label:"Product photo(s)"}],
+  trends:[{field:"fld01cWxcFjoI09TG",name:"Photos",label:"Photos"}]
+};
 const SCHEMA={
-  suppliers:{title:"Suppliers",icon:"🪪",primary:"Company Name",sub:["Contact Person","WeChat ID"],scan:true,fields:[
+  suppliers:{title:"Company",icon:"🏢",primary:"Company Name",sub:["Contact Person","WeChat ID"],scan:true,fields:[
     {n:"Company Name",l:"Company name",t:"text",req:true,full:true},
     {n:"Contact Person",l:"Contact person",t:"text"},
     {n:"Phone / WhatsApp",l:"Phone / WhatsApp",t:"tel"},
     {n:"WeChat ID",l:"WeChat ID",t:"text"},
     {n:"Email",l:"Email",t:"email"},
-    {n:"Product Categories",l:"Categories",t:"multi",opts:CATS,full:true},
+    {n:"Product Categories",l:"Product categories",t:"multi",opts:CATS,full:true},
+    {n:"MOQ",l:"MOQ",t:"number"},
+    {n:"Unit Price",l:"Unit price (¥)",t:"number"},
+    {n:"Price Notes",l:"Price notes",t:"text"},
+    {n:"Sample Available",l:"Sample available",t:"checkbox"},
     {n:"Follow-up Status",l:"Follow-up",t:"select",opts:["New","To Contact","Contacted","Sample Requested","Quoted","Negotiating","Closed / Won","Not Pursuing"]},
     {n:"Interest Level",l:"Interest",t:"rating"},
     {n:"Date Met",l:"Date met",t:"date"},
     {n:"Internal Remarks",l:"Remarks",t:"textarea",full:true}
-  ]},
-  products:{title:"Products",icon:"📦",primary:"Product Name",sub:["_supplier","Price Notes"],fields:[
-    {n:"Product Name",l:"Product name",t:"text",req:true,full:true},
-    {n:"Supplier",l:"Supplier",t:"link",full:true},
-    {n:"Category",l:"Category",t:"multi",opts:CATS,full:true},
-    {n:"MOQ",l:"MOQ",t:"number"},
-    {n:"Unit Price",l:"Unit price ($)",t:"number"},
-    {n:"Price Notes",l:"Price notes",t:"text"},
-    {n:"Status",l:"Status",t:"select",opts:["New","Shortlisted","Sample Requested","Quoted","Ordered","Rejected"]},
-    {n:"Interest Level",l:"Interest",t:"rating"},
-    {n:"Sample Available",l:"Sample available",t:"checkbox"},
-    {n:"Date Logged",l:"Date logged",t:"date"},
-    {n:"Notes",l:"Notes",t:"textarea",full:true}
   ]},
   trends:{title:"Trends & Notes",icon:"💡",primary:"Observation",sub:["Category","_relsupplier"],fields:[
     {n:"Observation",l:"Observation (headline)",t:"text",req:true,full:true},
@@ -455,7 +474,7 @@ async function api(path,opts){
   opts.headers=Object.assign({},opts.headers,{"X-Team-Password":TEAM_PW});
   const r=await fetch(API()+path,opts); const d=await r.json(); if(!r.ok||d.error) throw new Error(d.error||("HTTP "+r.status)); return d;
 }
-const cache={suppliers:null,products:null,trends:null};
+const cache={suppliers:null,trends:null,companies:null};
 
 /* ---------- Login gate ---------- */
 const loginGate=document.getElementById('loginGate');
@@ -488,7 +507,7 @@ const boardTitle=document.getElementById('board-title');
 const boardActions=document.getElementById('board-actions');
 const boardBody=document.getElementById('board-body');
 
-const TYPES=[['suppliers','🪪','Supplier'],['products','📦','Product'],['trends','💡','Note']];
+const TYPES=[['suppliers','🏢','Company'],['trends','💡','Note']];
 document.getElementById('logBtn').addEventListener('click',()=>openEntity(current||'suppliers'));
 
 async function openEntity(ent){
@@ -518,8 +537,9 @@ function renderList(ent,recs){
   recs.slice().reverse().forEach(rec=>{
     const f=rec.fields||{};
     const row=document.createElement('div'); row.className='row';
-    const att=f[ATTACH[ent].name];
-    const thumb=(att&&att[0]&&att[0].thumbnails&&att[0].thumbnails.small)?att[0].thumbnails.small.url:(att&&att[0]?att[0].url:null);
+    const attDefs=ATTACH[ent]||[];
+    const att0=attDefs[0]?f[attDefs[0].name]:null;
+    const thumb=(att0&&att0[0]&&att0[0].thumbnails&&att0[0].thumbnails.small)?att0[0].thumbnails.small.url:(att0&&att0[0]?att0[0].url:null);
     let sub=sc.sub.map(k=>{
       if(k==='_supplier'){ const s=f["Supplier"]; return s&&s[0]?supplierName(s[0]):""; }
       if(k==='_relsupplier'){ const s=f["Related Supplier"]; return s&&s[0]?supplierName(s[0]):""; }
@@ -528,7 +548,7 @@ function renderList(ent,recs){
     const badges=[];
     if(f["Interest Level"]) badges.push('<span class="stars">'+"★".repeat(f["Interest Level"])+'</span>');
     const st=f["Follow-up Status"]||f["Status"]; if(st) badges.push('<span class="chip">'+esc(st)+'</span>');
-    const nAtt=att?att.length:0; if(nAtt) badges.push('<span class="chip amber">📷 '+nAtt+'</span>');
+    const nAtt=attDefs.reduce((k,a)=>k+((f[a.name]||[]).length),0); if(nAtt) badges.push('<span class="chip amber">📷 '+nAtt+'</span>');
     row.innerHTML=(thumb?'<img class="thumb" src="'+thumb+'">':'<div class="thumb ph">'+SCHEMA[ent].icon+'</div>')
       +'<div class="info"><div class="nm">'+esc(f[sc.primary]||"(untitled)")+'</div><div class="sub">'+esc(sub)+'</div></div>'
       +'<div class="badges">'+badges.join('')+'</div>';
@@ -539,12 +559,11 @@ function renderList(ent,recs){
 }
 
 /* ---------- Form ---------- */
-let selectedPhotos=[]; // {file, dataUrl}
-let keptPhotos=[];     // existing attachment objects to keep
+let photoState={}; // per attachment field name: {sel:[], kept:[], strip, fieldId}
 
 function showForm(ent,rec){
   const sc=SCHEMA[ent]; const f=rec?(rec.fields||{}):{};
-  selectedPhotos=[]; keptPhotos=rec&&f[ATTACH[ent].name]?f[ATTACH[ent].name].slice():[];
+  photoState={};
   boardActions.innerHTML='';
   const back=document.createElement('button'); back.className='btn ghost sm'; back.textContent='‹ Back to list';
   back.onclick=()=>openEntity(ent); boardActions.appendChild(back);
@@ -584,11 +603,15 @@ function showForm(ent,rec){
     wrap.appendChild(el); form.appendChild(wrap);
   });
 
-  // photos
-  const pv=document.createElement('div'); pv.className='fld full';
-  pv.innerHTML='<label>'+esc(ATTACH[ent].name)+' (photos)</label>';
-  const strip=document.createElement('div'); strip.className='photos'; strip.id='photostrip';
-  pv.appendChild(strip); form.appendChild(pv);
+  // photos: one strip per attachment field
+  (ATTACH[ent]||[]).forEach(att=>{
+    photoState[att.name]={sel:[],kept: rec && f[att.name]? f[att.name].slice():[], fieldId:att.field, strip:null};
+    const pv=document.createElement('div'); pv.className='fld full';
+    pv.innerHTML='<label>'+esc(att.label)+'</label>';
+    const strip=document.createElement('div'); strip.className='photos';
+    photoState[att.name].strip=strip; pv.appendChild(strip); form.appendChild(pv);
+    renderStrip(att.name);
+  });
 
   const actions=document.createElement('div'); actions.className='form-actions';
   const save=document.createElement('button'); save.type='submit'; save.className='btn'; save.textContent=rec?'Save changes':'Save entry';
@@ -598,20 +621,19 @@ function showForm(ent,rec){
 
   form.onsubmit=(e)=>{ e.preventDefault(); doSave(ent,rec,form,save); };
   boardBody.innerHTML=''; boardBody.appendChild(form);
-  renderPhotoStrip(ent);
 }
 
-function renderPhotoStrip(ent){
-  const strip=document.getElementById('photostrip'); if(!strip) return; strip.innerHTML='';
-  keptPhotos.forEach((a,i)=>{ const d=document.createElement('div'); d.className='ph-item';
+function renderStrip(attName){
+  const st=photoState[attName]; if(!st) return; const strip=st.strip; if(!strip) return; strip.innerHTML='';
+  st.kept.forEach((a,i)=>{ const d=document.createElement('div'); d.className='ph-item';
     d.innerHTML='<img src="'+((a.thumbnails&&a.thumbnails.small)?a.thumbnails.small.url:a.url)+'"><button type="button" class="rm">✕</button>';
-    d.querySelector('.rm').onclick=()=>{ keptPhotos.splice(i,1); renderPhotoStrip(ent); }; strip.appendChild(d); });
-  selectedPhotos.forEach((p,i)=>{ const d=document.createElement('div'); d.className='ph-item';
+    d.querySelector('.rm').onclick=()=>{ st.kept.splice(i,1); renderStrip(attName); }; strip.appendChild(d); });
+  st.sel.forEach((p,i)=>{ const d=document.createElement('div'); d.className='ph-item';
     d.innerHTML='<img src="'+p.dataUrl+'"><button type="button" class="rm">✕</button>';
-    d.querySelector('.rm').onclick=()=>{ selectedPhotos.splice(i,1); renderPhotoStrip(ent); }; strip.appendChild(d); });
+    d.querySelector('.rm').onclick=()=>{ st.sel.splice(i,1); renderStrip(attName); }; strip.appendChild(d); });
   const add=document.createElement('label'); add.className='ph-add'; add.innerHTML='<span>＋</span>Add photo';
   const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.multiple=true; inp.style.display='none';
-  inp.onchange=async()=>{ for(const file of inp.files){ const dataUrl=await readFile(file); selectedPhotos.push({file,dataUrl}); } renderPhotoStrip(ent); };
+  inp.onchange=async()=>{ for(const file of inp.files){ const dataUrl=await readFile(file); st.sel.push({file,dataUrl}); } renderStrip(attName); };
   add.appendChild(inp); strip.appendChild(add);
 }
 function readFile(file){ return new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file); }); }
@@ -643,21 +665,20 @@ async function doSave(ent,rec,form,btn){
     }
     let recId;
     if(rec){
-      // update: also reconcile kept photos (handles deletions)
-      const attName=ATTACH[ent].name;
-      fields[attName]=keptPhotos.map(a=>({id:a.id}));
+      (ATTACH[ent]||[]).forEach(att=>{ fields[att.name]=(photoState[att.name]?photoState[att.name].kept:[]).map(a=>({id:a.id})); });
       await api("/api/"+ent+"/"+rec.id,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields})});
       recId=rec.id;
     } else {
       const created=await api("/api/"+ent,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields})});
       recId=created.id;
     }
-    // upload new photos
-    for(const p of selectedPhotos){
-      const b64=p.dataUrl.split(",")[1];
-      await api("/api/"+ent+"/"+recId+"/photo?field="+ATTACH[ent].field,
-        {method:"POST",headers:{"Content-Type":"application/json"},
-         body:JSON.stringify({filename:p.file.name||"photo.jpg",contentType:p.file.type||"image/jpeg",file:b64})});
+    for(const att of (ATTACH[ent]||[])){
+      for(const p of (photoState[att.name]?photoState[att.name].sel:[])){
+        const b64=p.dataUrl.split(",")[1];
+        await api("/api/"+ent+"/"+recId+"/photo?field="+att.field,
+          {method:"POST",headers:{"Content-Type":"application/json"},
+           body:JSON.stringify({filename:p.file.name||"photo.jpg",contentType:p.file.type||"image/jpeg",file:b64})});
+      }
     }
     await loadList(ent); if(ent==='suppliers'){ /* refresh link names */ }
     openEntity(ent);
@@ -676,11 +697,11 @@ async function doDelete(ent,rec){
   }catch(e){ alert("Couldn't delete: "+e.message); }
 }
 
-function refreshCounts(){ ["suppliers","products","trends"].forEach(ent=>{ const el=document.getElementById("cnt-"+ent); if(el) el.textContent=(cache[ent]?cache[ent].length:0); }); }
+function refreshCounts(){ ["suppliers","trends"].forEach(ent=>{ const el=document.getElementById("cnt-"+ent); if(el) el.textContent=(cache[ent]?cache[ent].length:0); }); }
 
 async function preloadCounts(){
-  if(!connected()){ ["suppliers","products","trends"].forEach(e=>{const el=document.getElementById("cnt-"+e); if(el) el.textContent="not connected";}); return; }
-  for(const ent of ["suppliers","products","trends"]){ try{ await loadList(ent); }catch(e){} }
+  if(!connected()){ ["suppliers","trends"].forEach(e=>{const el=document.getElementById("cnt-"+e); if(el) el.textContent="not connected";}); return; }
+  for(const ent of ["suppliers","trends"]){ try{ await loadList(ent); }catch(e){} }
   refreshCounts();
 }
 function esc(s){return (s==null?"":(""+s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
@@ -693,7 +714,7 @@ async function doScan(inp,form,msg){
   msg.textContent='📷 Reading card…'; msg.className='scanmsg';
   try{
     const dataUrl=await readFile(file);
-    selectedPhotos.push({file,dataUrl}); renderPhotoStrip('suppliers'); // keep the card as the namecard photo too
+    if(photoState['Namecard']){ photoState['Namecard'].sel.push({file,dataUrl}); renderStrip('Namecard'); } // keep the card as the namecard photo too
     const b64=dataUrl.split(',')[1];
     const r=await api('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:b64,contentType:file.type||'image/jpeg'})});
     const d=(r&&r.data)?r.data:(r||{});
@@ -713,6 +734,8 @@ async function loadTodo(){
   body.innerHTML='<div class="empty">Loading…</div>';
   try{
     const d=await api('/api/todo'); const recs=d.records||[];
+    const sig=JSON.stringify(recs.map(r=>[r.id,r.fields.Status,r.fields.Task,r.fields.Timing,r.fields.Category]));
+    if(sig===_todoSig && body.querySelector('.todoitem')) return; _todoSig=sig;
     if(!recs.length){ body.innerHTML='<div class="empty">No tasks yet.</div>'; return; }
     let html='';
     TODO_GROUPS.forEach(g=>{
@@ -742,6 +765,38 @@ async function loadTodo(){
       };
     });
   }catch(e){ body.innerHTML='<div class="msg err">Couldn’t load to-do: '+esc(e.message)+'</div>'; }
+}
+let _todoSig="";
+
+/* ---------- Companies directory ---------- */
+const AREA_ORDER=['临沂','青岛','潍坊','济南'];
+function coStatusClass(x){ return ({'已确认':'ok','争取中':'warn','询问中':'warn','待联系':'mut','未确认':'mut'})[x]||'mut'; }
+async function loadCompanies(){
+  const body=document.getElementById('companies-body'); if(!body) return;
+  body.innerHTML='<div class="empty">Loading…</div>';
+  try{
+    const d=await api('/api/companies'); const recs=d.records||[];
+    if(!recs.length){ body.innerHTML='<div class="empty">No companies yet.</div>'; return; }
+    const areas={}; recs.forEach(r=>{ const a=(r.fields.Area)||'其他'; (areas[a]=areas[a]||[]).push(r); });
+    const order=AREA_ORDER.filter(a=>areas[a]).concat(Object.keys(areas).filter(a=>AREA_ORDER.indexOf(a)<0));
+    let html='';
+    order.forEach(a=>{
+      const list=areas[a].slice().sort((x,y)=>((y.fields.Rating||0)-(x.fields.Rating||0)));
+      html+='<div class="coarea"><div class="coareahd">📍 '+esc(a)+' <span class="cocount">'+list.length+'</span></div>';
+      list.forEach(r=>{ const f=r.fields; const rt=f.Rating||0;
+        const stars=rt?'<span class="costars">'+'★'.repeat(rt)+'</span>':'';
+        const st=f['Visit Status']?'<span class="costat s'+coStatusClass(f['Visit Status'])+'">'+esc(f['Visit Status'])+'</span>':'';
+        const tm=f['Suggested Time']?'<span class="cotime">🕑 '+esc(f['Suggested Time'])+'</span>':'';
+        const rm=f.Remarks?'<span class="corem">'+esc(f.Remarks)+'</span>':'';
+        const meta=[f.Location,f.Business].filter(Boolean).map(esc).join(' · ');
+        html+='<div class="cocard"><div class="cotop"><span class="coname">'+esc(f.Company||'')+'</span>'+stars+'</div>'
+          +(meta?'<div class="cometa">'+meta+'</div>':'')
+          +'<div class="cotags">'+st+tm+rm+'</div></div>';
+      });
+      html+='</div>';
+    });
+    body.innerHTML=html;
+  }catch(e){ body.innerHTML='<div class="msg err">Couldn’t load companies: '+esc(e.message)+'</div>'; }
 }
 
 /* ---------- Itinerary accordion ---------- */
