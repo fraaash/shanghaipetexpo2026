@@ -198,6 +198,8 @@
   .card .tik{font-size:12.5px;color:var(--muted);margin-top:6px}
   .card .srcmeta{font-size:13px;color:var(--teal-d);font-weight:700;margin-top:8px}
   #source .cpill{background:#fdeede;color:var(--amber-d)}
+  #fresh .cpill{background:#e7f6ee;color:var(--teal-d)}
+  #fresh td:first-child{color:var(--muted);font-weight:700;width:34px}
   .coarea{margin:16px 0}
   .coareahd{font-weight:800;color:var(--teal-d);font-size:16px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
   .cocount{font-size:12px;font-weight:700;color:var(--muted);background:#eef5f3;border-radius:999px;padding:2px 9px}
@@ -279,6 +281,7 @@
     <button data-tab="schedule">🗓 Schedule</button>
     <button data-tab="todo">✅ To-Do</button>
     <button data-tab="companies">🏢 Companies</button>
+    <button data-tab="fresh">🍲 Fresh Food</button>
     <button data-tab="source">🎯 To Source</button>
   </div>
 </nav>
@@ -416,6 +419,21 @@
     <h2>Companies</h2>
     <p class="lead">The full company / factory visit list, grouped by area. Tap a company to see its details. Sorted by rating within each area.</p>
     <div id="companies-body"><div class="empty">Loading…</div></div>
+  </div>
+</section>
+
+<!-- ================= FRESH FOOD ================= -->
+<section class="panel" id="fresh">
+  <div class="wrap">
+    <h2>Pet Fresh Food Brands <span class="srcnote">鲜食 / 中央厨房</span></h2>
+    <p class="lead">Our running shortlist of fresh-food &amp; central-kitchen brands to meet, sample and evaluate. Cross-reference with <strong>Schedule</strong> (源齿 is a Day-1 visit; 馒奇 already contacted) and log full details in <strong>Companies</strong> once met.</p>
+    <div class="countbar" style="margin-bottom:10px">
+      <span class="cpill">17 brands</span><span class="cpill">4 上海</span><span class="cpill">2 优先/已联系</span><span class="cpill">11 待确认</span>
+    </div>
+    <table class="detail"><thead><tr><th>#</th><th>品牌 Brand</th><th>所在地 / 备注</th><th>状态</th></tr></thead><tbody>
+      <tr class="visit"><td>1</td><td><b>源齿 Born Tooth</b></td><td>上海苏河湾万象天地</td><td><span class="t-stat ok">📅 Day 1 参观</span></td></tr><tr><td>2</td><td><b>小鲜粮</b></td><td>广州，中央厨房模式</td><td></td></tr><tr><td>3</td><td><b>奥利的厨房</b></td><td>上海，人食级中央厨房</td><td></td></tr><tr><td>4</td><td><b>馒奇 ManKee</b></td><td>上海，已联系</td><td><span class="t-stat ok">已联系</span></td></tr><tr><td>5</td><td><b>派膳师</b></td><td>待确认，凯尔资旗下</td><td><span class="t-stat warn">待确认</span></td></tr><tr><td>6</td><td><b>黑米先生</b></td><td>待确认，定制化鲜食</td><td><span class="t-stat warn">待确认</span></td></tr><tr><td>7</td><td><b>致宠鲜餐 Pets Table</b></td><td>上海，优先联系</td><td><span class="t-stat imp">优先联系</span></td></tr><tr><td>8</td><td><b>拍窝森 Paw Some</b></td><td>待确认</td><td><span class="t-stat warn">待确认</span></td></tr><tr><td>9</td><td><b>一口一伴 The BitBite</b></td><td>待确认</td><td><span class="t-stat warn">待确认</span></td></tr><tr><td>10</td><td><b>啊呜鲜食 AhhWoo</b></td><td>待确认</td><td><span class="t-stat warn">待确认</span></td></tr><tr><td>11</td><td><b>源鲜宠食 OriFresh</b></td><td>待确认</td><td><span class="t-stat warn">待确认</span></td></tr><tr><td>12</td><td><b>鲜食厨房 Pettell</b></td><td>待确认</td><td><span class="t-stat warn">待确认</span></td></tr><tr><td>13</td><td><b>MCat 饲肉兽</b></td><td>待确认</td><td><span class="t-stat warn">待确认</span></td></tr><tr><td>14</td><td><b>WoofBuff</b></td><td>待确认</td><td><span class="t-stat warn">待确认</span></td></tr><tr><td>15</td><td><b>PettoKiddo</b></td><td>深圳/广东</td><td></td></tr><tr><td>16</td><td><b>UOK 宠物鲜食</b></td><td>待确认</td><td><span class="t-stat warn">待确认</span></td></tr><tr><td>17</td><td><b>Uki Oki 宠物鲜食</b></td><td>待确认</td><td><span class="t-stat warn">待确认</span></td></tr>
+    </tbody></table>
+    <p class="note">Priority contacts: <b style="color:var(--red)">致宠鲜餐 Pets Table</b> (优先联系) · <b style="color:var(--good)">馒奇 ManKee</b> (已联系) · <b style="color:var(--good)">源齿 Born Tooth</b> (Day-1 visit). Human-grade central-kitchen models to watch: 奥利的厨房, 小鲜粮.</p>
   </div>
 </section>
 
@@ -882,7 +900,7 @@ async function loadCompanies(){
 
 /* ---------- Itinerary accordion ---------- */
 const DAYS=[
-  {"date": "18 Aug · 周一", "city": "上海", "plan": "抵达上海 · 福贝 + 门店探访", "rows": [{"t": "05:30", "a": "抵达上海浦东机场", "d": "入境取行李后前往酒店", "s": "已确认"}, {"t": "06:30-07:00", "a": "入住酒店", "d": "推荐汉庭/亚朵龙阳路店，近展馆", "loc": "浦东龙阳路", "s": "已确认"}, {"t": "07:00-09:30", "a": "补觉休息", "d": "凌晨抵达需恢复体力", "s": "已确认"}, {"t": "09:30-10:00", "a": "早餐", "d": "酒店附近简单解决", "s": "已确认"}, {"t": "10:00-11:00", "a": "前往福贝宠物食品", "d": "打车或地铁前往松江", "loc": "松江区", "s": "视福贝确认情况"}, {"t": "11:00-12:30", "a": "参观福贝宠物食品", "d": "头部代工方，重点看主粮生产线与品控", "loc": "上海松江", "s": "待确认中", "v": 1}, {"t": "12:30-13:30", "a": "午餐", "d": "松江附近", "s": "已确认"}, {"t": "13:30-15:00", "a": "返回市区", "d": "打车或地铁", "s": "已确认"}, {"t": "15:00-17:00", "a": "可选：电力宠物公司", "d": "潮牌买手店，看选品与陈列", "loc": "静安区武宁南路189号", "s": "如体力允许"}, {"t": "17:00-18:00", "a": "返回酒店晚餐", "d": "早点休息倒时差", "s": "已确认"}]},
+  {"date": "18 Aug · 周一", "city": "上海", "plan": "抵达上海 · 电力宠物 + 包装厂 + 源齿", "rows": [{"t": "06:00", "a": "抵达上海浦东机场", "d": "入境取行李", "s": "已确认"}, {"t": "06:00-09:30", "a": "前往酒店", "d": "从浦东机场到普陀镇坪路地铁站 Atour Light，地铁/打车约1.5小时", "loc": "普陀区镇坪路地铁站轻居酒店", "s": "已确认"}, {"t": "09:30", "a": "抵达酒店", "d": "办理入住或寄存行李", "s": "已确认"}, {"t": "09:30-11:30", "a": "早餐与周边逛逛", "d": "酒店附近吃早餐，熟悉周边环境", "s": "已确认"}, {"t": "11:30-13:30", "a": "洗漱休息", "d": "回酒店洗漱、整理行李、稍作休息", "s": "已确认"}, {"t": "13:30", "a": "从酒店出发", "d": "开始下午行程", "loc": "普陀镇坪路 Atour Light", "s": "已确认"}, {"t": "13:30-13:45", "a": "前往电力宠物百货", "d": "打车约10分钟", "loc": "静安区武宁南路189号", "s": "顺路"}, {"t": "13:45-14:25", "a": "参观电力宠物百货", "d": "潮牌宠物买手店，重点看选品、陈列、自有品牌", "loc": "静安区武宁南路189号", "s": "建议保留", "v": 1}, {"t": "14:25-15:00", "a": "前往包装厂", "d": "预留约35分钟交通，确保15:30前到达", "loc": "包装厂地址待确认", "s": "已确认行程"}, {"t": "15:30-17:00", "a": "参观包装厂", "d": "宠物食品包装生产线，重点看包装材质与设备", "loc": "上海包装厂", "s": "已确认", "v": 1}, {"t": "17:00-17:30", "a": "前往源齿", "d": "从包装厂打车前往，视包装厂位置约20-30分钟", "loc": "静安区苏河湾万象天地", "s": "如包装厂离得远可灵活调整"}, {"t": "17:30-18:30", "a": "参观源齿", "d": "鲜食品牌，重点看产品与运营模式", "loc": "苏河湾万象天地", "s": "如时间充裕可适当延长", "v": 1}, {"t": "18:30以后", "a": "可选：PetZoo / 宠四季 或 返回酒店", "d": "根据体力与位置决定，也可推迟到明天/后天", "loc": "PetZoo大宁保利时光里/宠四季普陀中环", "s": "可灵活调整"}]},
   {"date": "19 Aug · 周二", "city": "上海 · 展", "plan": "亚宠展 Day 1 · 关键预约", "rows": [{"t": "08:30-09:00", "a": "亚宠展入场", "d": "提前官网预登记扫码入场", "loc": "上海新国际博览中心", "s": "已确认"}, {"t": "09:00-09:30", "a": "帅克宠物展位", "d": "现场确认8月22日下午参观名额与时间", "loc": "亚宠展展位", "s": "关键任务"}, {"t": "09:30-10:00", "a": "汉欧生物展位", "d": "已确认参观，敲定8月22日下午具体安排", "loc": "亚宠展展位", "s": "已确认参观"}, {"t": "10:00-10:30", "a": "宠之优品展位", "d": "争取8月24日下午参观", "loc": "亚宠展展位", "s": "待确认"}, {"t": "10:30-11:00", "a": "宜尔康展位", "d": "现场再问8月24日上午参观可能", "loc": "亚宠展展位", "s": "询问中"}, {"t": "11:00-12:00", "a": "鲜食品牌巡礼", "d": "源齿/馒奇/致宠鲜餐/小鲜粮/奥利的厨房等", "loc": "亚宠展展位", "s": "收集信息"}, {"t": "12:00-13:00", "a": "午餐", "d": "展馆内", "s": "已确认"}, {"t": "13:00-16:00", "a": "自由逛展", "d": "重点看冻干设备/包装/原料/营养品", "loc": "亚宠展展馆", "s": "已确认"}, {"t": "16:00-17:00", "a": "整理预约结果", "d": "确认后续所有工厂参观安排", "s": "已确认"}, {"t": "晚上", "a": "休息", "d": "为第二天养精蓄锐", "s": "已确认"}]},
   {"date": "20 Aug · 周三", "city": "上海 · 展", "plan": "亚宠展 Day 2 · 论坛", "rows": [{"t": "09:00-12:00", "a": "亚宠展第二天", "d": "补漏展商，参加行业论坛", "loc": "上海新国际博览中心", "s": "已确认"}, {"t": "12:00-13:00", "a": "午餐", "d": "展馆内", "s": "已确认"}, {"t": "13:00-16:00", "a": "自由逛展", "d": "智能设备/原料/包装区", "loc": "亚宠展展馆", "s": "已确认"}, {"t": "晚上", "a": "休息", "s": "已确认"}]},
   {"date": "21 Aug · 周四", "city": "上海 · 展", "plan": "亚宠展收尾 · 鲜食品牌", "rows": [{"t": "09:00-12:00", "a": "亚宠展最后半天", "d": "与鲜食品牌敲定上海参观或交流", "loc": "上海新国际博览中心", "s": "已确认"}, {"t": "12:00-13:00", "a": "午餐", "s": "已确认"}, {"t": "13:30-15:00", "a": "参观Man Kee馒奇", "d": "人食级鲜食品牌，重点看生产流程或办公室交流", "loc": "上海（具体地址待对方确认）", "s": "待确认时间", "v": 1}, {"t": "15:30-17:00", "a": "可选：致宠鲜餐/奥利的厨房", "d": "上海本地鲜食品牌，如约到则前往", "loc": "上海", "s": "待确认"}, {"t": "晚上", "a": "整理行李早休息", "d": "明天早上6点高铁", "s": "已确认"}]},
