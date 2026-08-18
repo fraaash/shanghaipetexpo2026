@@ -142,6 +142,9 @@
   .ph-add{width:84px;height:84px;border:2px dashed var(--line);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:12px;cursor:pointer;text-align:center}
   .ph-add span{font-size:22px;line-height:1}
   .ph-add.cam{border-style:solid;border-color:var(--teal);color:var(--teal-d);background:#e7f6ee}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(12px);background:var(--teal-d);color:#fff;padding:11px 18px;border-radius:10px;font-weight:600;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;transition:.28s;z-index:9999;max-width:90%;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.warn{background:var(--amber-d)}
   .form-actions{grid-column:1/-1;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px;border-top:1px solid var(--line);padding-top:14px}
   .form-actions .left{margin-right:auto}
   .saving{opacity:.6;pointer-events:none}
@@ -571,7 +574,11 @@ let TEAM_PW="";  // set at login, sent with every request, checked by the Worker
 async function api(path,opts){
   opts=opts||{};
   opts.headers=Object.assign({},opts.headers,{"X-Team-Password":TEAM_PW});
-  const r=await fetch(API()+path,opts); const d=await r.json(); if(!r.ok||d.error) throw new Error(d.error||("HTTP "+r.status)); return d;
+  const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(), opts.timeout||90000); opts.signal=ctrl.signal;
+  try{
+    const r=await fetch(API()+path,opts); const d=await r.json(); if(!r.ok||d.error) throw new Error(d.error||("HTTP "+r.status)); return d;
+  }catch(e){ if(e.name==='AbortError') throw new Error('Request timed out — check your connection and try again.'); throw e; }
+  finally{ clearTimeout(to); }
 }
 const cache={suppliers:null,trends:null,companies:null};
 
@@ -601,6 +608,7 @@ function supplierName(recId){ const s=(cache.suppliers||[]).find(r=>r.id===recId
 
 /* ---------- Board (list + form) ---------- */
 let current=null;
+let navToken=0; // guards against a slow list-load overwriting a freshly opened form
 const board=document.getElementById('board');
 const boardTitle=document.getElementById('board-title');
 const boardActions=document.getElementById('board-actions');
@@ -610,7 +618,7 @@ const TYPES=[['suppliers','🏢','Company'],['trends','💡','Note']];
 document.getElementById('logBtn').addEventListener('click',()=>openEntity(current||'suppliers'));
 
 async function openEntity(ent){
-  current=ent;
+  current=ent; const my=++navToken;
   document.getElementById('logBtn').classList.add('active');
   board.classList.add('show');
   boardTitle.innerHTML=TYPES.map(function(t){return '<button type="button" class="tsw'+(t[0]===ent?' on':'')+'" data-t="'+t[0]+'">'+t[1]+' '+t[2]+'</button>';}).join('');
@@ -618,15 +626,16 @@ async function openEntity(ent){
   boardActions.innerHTML='';
   board.scrollIntoView({behavior:'smooth',block:'start'});
   const lbl=(TYPES.find(t=>t[0]===ent)||[])[2]||'entry';
-  const addBtn=document.createElement('button'); addBtn.className='btn sm'; addBtn.textContent='＋ New '+lbl;
+  const addBtn=document.createElement('button'); addBtn.type='button'; addBtn.className='btn sm'; addBtn.textContent='＋ New '+lbl;
   addBtn.onclick=()=>showForm(ent,null); boardActions.appendChild(addBtn);
   boardBody.innerHTML='<div class="empty">Loading…</div>';
   try{
     if(ent!=='suppliers' && !cache.suppliers) await loadList('suppliers'); // for link names
     const recs=await loadList(ent);
+    if(my!==navToken) return; // a newer view (e.g. an opened form) superseded this load
     renderList(ent,recs);
     refreshCounts();
-  }catch(e){ boardBody.innerHTML='<div class="msg err">Couldn\'t load data: '+esc(e.message)+'</div>'; }
+  }catch(e){ if(my===navToken) boardBody.innerHTML='<div class="msg err">Couldn\'t load data: '+esc(e.message)+'</div>'; }
 }
 
 function renderList(ent,recs){
@@ -661,10 +670,11 @@ function renderList(ent,recs){
 let photoState={}; // per attachment field name: {sel:[], kept:[], strip, fieldId}
 
 function showForm(ent,rec){
+  ++navToken; // supersede any in-flight list load so it can't clobber the form
   const sc=SCHEMA[ent]; const f=rec?(rec.fields||{}):{};
   photoState={};
   boardActions.innerHTML='';
-  const back=document.createElement('button'); back.className='btn ghost sm'; back.textContent='‹ Back to list';
+  const back=document.createElement('button'); back.type='button'; back.className='btn ghost sm'; back.textContent='‹ Back to list';
   back.onclick=()=>openEntity(ent); boardActions.appendChild(back);
 
   const form=document.createElement('form'); form.className='entry';
@@ -774,20 +784,56 @@ async function doSave(ent,rec,form,btn){
       const created=await api("/api/"+ent,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields})});
       recId=created.id;
     }
+    // Upload photos: compressed, in parallel, fault-tolerant (record is already saved)
+    let photoTotal=0, photoFail=0;
+    const jobs=[];
     for(const att of (ATTACH[ent]||[])){
       for(const p of (photoState[att.name]?photoState[att.name].sel:[])){
-        const b64=p.dataUrl.split(",")[1];
-        await api("/api/"+ent+"/"+recId+"/photo?field="+att.field,
-          {method:"POST",headers:{"Content-Type":"application/json"},
-           body:JSON.stringify({filename:p.file.name||"photo.jpg",contentType:p.file.type||"image/jpeg",file:b64})});
+        photoTotal++;
+        jobs.push((async()=>{
+          try{
+            const b64=await compressToB64(p.dataUrl);
+            await api("/api/"+ent+"/"+recId+"/photo?field="+att.field,
+              {method:"POST",headers:{"Content-Type":"application/json"},
+               body:JSON.stringify({filename:(p.file&&p.file.name)||"photo.jpg",contentType:"image/jpeg",file:b64})});
+          }catch(err){ photoFail++; }
+        })());
       }
     }
-    await loadList(ent); if(ent==='suppliers'){ /* refresh link names */ }
+    if(jobs.length){ btn.textContent='Uploading '+jobs.length+' photo'+(jobs.length>1?'s':'')+'…'; await Promise.all(jobs); }
+    await loadList(ent);
     openEntity(ent);
+    if(photoFail) toast('Saved ✓ — but '+photoFail+' of '+photoTotal+' photo'+(photoTotal>1?'s':'')+' didn’t attach. Open the entry to re-add them.', true);
+    else toast(rec?'Saved ✓':'Entry added ✓');
   }catch(e){
-    form.classList.remove('saving'); btn.textContent='Save';
+    form.classList.remove('saving'); btn.textContent=rec?'Save changes':'Save entry';
     alert("Couldn't save: "+e.message);
   }
+}
+
+// Shrink an image dataURL (canvas) to a max edge + JPEG quality, return base64 (no prefix)
+function compressToB64(dataUrl, max=1600, q=0.82){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      try{
+        let w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+        if(Math.max(w,h)>max){ const s=max/Math.max(w,h); w=Math.round(w*s); h=Math.round(h*s); }
+        const c=document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        res(c.toDataURL('image/jpeg',q).split(',')[1]);
+      }catch(e){ res(dataUrl.split(',')[1]); }
+    };
+    img.onerror=()=>res(dataUrl.split(',')[1]);
+    img.src=dataUrl;
+  });
+}
+
+// Brief on-screen confirmation
+function toast(msg,warn){
+  const t=document.createElement('div'); t.className='toast'+(warn?' warn':''); t.textContent=msg;
+  document.body.appendChild(t); requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),300); }, warn?5600:2400);
 }
 
 async function doDelete(ent,rec){
