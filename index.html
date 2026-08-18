@@ -145,6 +145,11 @@
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(12px);background:var(--teal-d);color:#fff;padding:11px 18px;border-radius:10px;font-weight:600;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;transition:.28s;z-index:9999;max-width:90%;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .toast.warn{background:var(--amber-d)}
+  .todoadd{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+  .todoadd input,.todoadd select{padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card)}
+  .todoadd #ta-task{flex:1 1 200px;min-width:150px}
+  .todoadd .ta-cat{flex:0 1 150px;min-width:110px}
+  .todoadd #ta-btn{white-space:nowrap}
   .form-actions{grid-column:1/-1;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px;border-top:1px solid var(--line);padding-top:14px}
   .form-actions .left{margin-right:auto}
   .saving{opacity:.6;pointer-events:none}
@@ -413,6 +418,12 @@
   <div class="wrap">
     <h2>To-Do</h2>
     <p class="lead">Everything to sort <strong>before</strong> and <strong>during</strong> the trip. Tap a task to tick it off — it updates the shared list for the whole team.</p>
+    <form id="todo-add" class="todoadd">
+      <input id="ta-task" type="text" placeholder="Add a task…" autocomplete="off" required>
+      <select id="ta-timing"><option value="Before Trip">🧳 Before</option><option value="During Trip">📍 During</option></select>
+      <input id="ta-cat" type="text" class="ta-cat" placeholder="Category (optional)" autocomplete="off">
+      <button type="submit" class="btn sm" id="ta-btn">＋ Add</button>
+    </form>
     <div id="todo-body"><div class="empty">Loading…</div></div>
   </div>
 </section>
@@ -529,11 +540,28 @@ tabBtns.forEach(b=>b.addEventListener('click',()=>{
   b.classList.add('active');
   document.getElementById(b.dataset.tab).classList.add('active');
   clearInterval(todoTimer); todoTimer=null;
-  if(b.dataset.tab==='todo'){ loadTodo(); todoTimer=setInterval(loadTodo,20000); }
+  if(b.dataset.tab==='todo'){ wireTodoAdd(); loadTodo(); todoTimer=setInterval(loadTodo,20000); }
   if(b.dataset.tab==='companies') loadCompanies();
   window.scrollTo({top:0,behavior:'smooth'});
 }));
 let todoTimer=null;
+let _todoWired=false;
+function wireTodoAdd(){
+  if(_todoWired) return; const f=document.getElementById('todo-add'); if(!f) return; _todoWired=true;
+  f.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const ti=document.getElementById('ta-task'), tm=document.getElementById('ta-timing'), tc=document.getElementById('ta-cat'), tb=document.getElementById('ta-btn');
+    const task=(ti.value||'').trim(); if(!task) return;
+    const fields={Task:task, Status:'To Do', Timing:tm.value};
+    const cat=(tc.value||'').trim(); if(cat) fields.Category=cat;
+    tb.disabled=true; tb.textContent='Adding…';
+    try{
+      await api('/api/todo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields})});
+      ti.value=''; tc.value=''; _todoSig=''; await loadTodo(); toast('Task added ✓'); ti.focus();
+    }catch(err){ alert('Couldn’t add task: '+err.message); }
+    finally{ tb.disabled=false; tb.textContent='＋ Add'; }
+  });
+}
 
 /* ---------- Schemas ---------- */
 const CATS=["Pet Food","Treats & Snacks","Toys","Accessories","Apparel","Grooming","Health & Supplements","Litter & Hygiene","Beds & Furniture","Smart / Tech","Aquatic","Packaging / OEM","Other"];
