@@ -145,6 +145,10 @@
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(12px);background:var(--teal-d);color:#fff;padding:11px 18px;border-radius:10px;font-weight:600;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;transition:.28s;z-index:9999;max-width:90%;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .toast.warn{background:var(--amber-d)}
+  .ph-item img{cursor:zoom-in}
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:10000;padding:20px;cursor:zoom-out}
+  .lightbox img{max-width:100%;max-height:100%;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+  .lightbox .lb-close{position:absolute;top:12px;right:18px;color:#fff;font-size:30px;font-weight:700;line-height:1;cursor:pointer}
   .todoadd{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
   .todoadd input,.todoadd select{padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--card)}
   .todoadd #ta-task{flex:1 1 200px;min-width:150px}
@@ -680,6 +684,8 @@ function renderList(ent,recs){
       +'<div class="info"><div class="nm">'+esc(f[sc.primary]||"(untitled)")+'</div><div class="sub">'+esc(sub)+'</div></div>'
       +'<div class="badges">'+badges.join('')+'</div>';
     row.onclick=()=>showForm(ent,rec);
+    const full=(att0&&att0[0])?((att0[0].thumbnails&&att0[0].thumbnails.full)?att0[0].thumbnails.full.url:att0[0].url):null;
+    const timg=row.querySelector('img.thumb'); if(timg&&full){ timg.style.cursor='zoom-in'; timg.onclick=(e)=>{ e.stopPropagation(); openLightbox(full); }; }
     wrap.appendChild(row);
   });
   boardBody.innerHTML=''; boardBody.appendChild(wrap);
@@ -755,10 +761,12 @@ function renderStrip(attName){
   const st=photoState[attName]; if(!st) return; const strip=st.strip; if(!strip) return; strip.innerHTML='';
   st.kept.forEach((a,i)=>{ const d=document.createElement('div'); d.className='ph-item';
     d.innerHTML='<img src="'+((a.thumbnails&&a.thumbnails.small)?a.thumbnails.small.url:a.url)+'"><button type="button" class="rm">✕</button>';
-    d.querySelector('.rm').onclick=()=>{ st.kept.splice(i,1); renderStrip(attName); }; strip.appendChild(d); });
+    d.querySelector('.rm').onclick=()=>{ st.kept.splice(i,1); renderStrip(attName); };
+    d.querySelector('img').onclick=()=>openLightbox((a.thumbnails&&a.thumbnails.full)?a.thumbnails.full.url:a.url); strip.appendChild(d); });
   st.sel.forEach((p,i)=>{ const d=document.createElement('div'); d.className='ph-item';
     d.innerHTML='<img src="'+p.dataUrl+'"><button type="button" class="rm">✕</button>';
-    d.querySelector('.rm').onclick=()=>{ st.sel.splice(i,1); renderStrip(attName); }; strip.appendChild(d); });
+    d.querySelector('.rm').onclick=()=>{ st.sel.splice(i,1); renderStrip(attName); };
+    d.querySelector('img').onclick=()=>openLightbox(p.dataUrl); strip.appendChild(d); });
   const onpick=async(el)=>{ for(const file of el.files){ const dataUrl=await readFile(file); st.sel.push({file,dataUrl}); } el.value=''; renderStrip(attName); };
   const cam=document.createElement('label'); cam.className='ph-add cam'; cam.innerHTML='<span>📷</span>Take photo';
   const cin=document.createElement('input'); cin.type='file'; cin.accept='image/*'; cin.capture='environment'; cin.style.display='none';
@@ -768,6 +776,17 @@ function renderStrip(attName){
   inp.onchange=()=>onpick(inp); add.appendChild(inp); strip.appendChild(add);
 }
 function readFile(file){ return new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file); }); }
+function openLightbox(src){
+  if(!src) return;
+  const lb=document.createElement('div'); lb.className='lightbox';
+  lb.innerHTML='<span class="lb-close">✕</span><img alt="photo">';
+  lb.querySelector('img').src=src;
+  const close=()=>{ lb.remove(); document.removeEventListener('keydown',onKey); };
+  function onKey(e){ if(e.key==='Escape') close(); }
+  lb.addEventListener('click',close);
+  document.addEventListener('keydown',onKey);
+  document.body.appendChild(lb);
+}
 
 function collectFields(form){
   const fields={};
