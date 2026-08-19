@@ -305,7 +305,7 @@
       <div class="upcard solo" id="logBtn"><div class="ico">＋</div><h4>Log an entry</h4><p>Supplier · Product · Note — one form</p></div>
     </div>
     <div class="countbar">
-      <span class="cpill">🏢 <b id="cnt-suppliers">—</b> companies</span>
+      <span class="cpill">📦 <b id="cnt-suppliers">—</b> items</span>
       <span class="cpill">💡 <b id="cnt-trends">—</b> notes</span>
     </div>
 
@@ -570,20 +570,11 @@ const ATTACH={
   trends:[{field:"fld01cWxcFjoI09TG",name:"Photos",label:"Photos"}]
 };
 const SCHEMA={
-  suppliers:{title:"Company",icon:"🏢",primary:"Company Name",sub:["Contact Person","WeChat ID"],scan:true,fields:[
-    {n:"Company Name",l:"Company name",t:"text",req:true,full:true},
-    {n:"Contact Person",l:"Contact person",t:"text"},
-    {n:"Phone / WhatsApp",l:"Phone / WhatsApp",t:"tel"},
-    {n:"WeChat ID",l:"WeChat ID",t:"text"},
-    {n:"Email",l:"Email",t:"email"},
-    {n:"Product Categories",l:"Product categories",t:"multi",opts:CATS,full:true},
-    {n:"MOQ",l:"MOQ",t:"number"},
-    {n:"Unit Price",l:"Unit price (¥)",t:"number"},
-    {n:"Price Notes",l:"Price notes",t:"text"},
-    {n:"Sample Available",l:"Sample available",t:"checkbox"},
-    {n:"Follow-up Status",l:"Follow-up",t:"select",opts:["New","To Contact","Contacted","Sample Requested","Quoted","Negotiating","Closed / Won","Not Pursuing"]},
+  suppliers:{title:"Item",icon:"📦",primary:"Items / Products",sub:["Company Name","Hall / Zone"],scan:true,fields:[
+    {n:"Items / Products",l:"Items / Products",t:"text",req:true,full:true},
+    {n:"Company Name",l:"Company name",t:"text",full:true},
+    {n:"Hall / Zone",l:"Hall / Location (where we met)",t:"text",full:true},
     {n:"Interest Level",l:"Interest",t:"rating"},
-    {n:"Date Met",l:"Date met",t:"date"},
     {n:"Internal Remarks",l:"Remarks",t:"textarea",full:true}
   ]},
   trends:{title:"Trends & Notes",icon:"💡",primary:"Observation",sub:["Category","_relsupplier"],fields:[
@@ -642,7 +633,7 @@ const boardTitle=document.getElementById('board-title');
 const boardActions=document.getElementById('board-actions');
 const boardBody=document.getElementById('board-body');
 
-const TYPES=[['suppliers','🏢','Company'],['trends','💡','Note']];
+const TYPES=[['suppliers','📦','Item'],['trends','💡','Note']];
 document.getElementById('logBtn').addEventListener('click',()=>openEntity(current||'suppliers'));
 
 async function openEntity(ent){
